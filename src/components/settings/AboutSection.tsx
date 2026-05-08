@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
 import {
-  Download,
   ExternalLink,
   Info,
   Loader2,
@@ -360,111 +359,84 @@ export function AboutSection({ isPortable }: AboutSectionProps) {
       transition={{ duration: 0.3 }}
       className="space-y-6"
     >
-      <header className="space-y-1">
-        <h3 className="text-sm font-medium">{t("common.about")}</h3>
-        <p className="text-xs text-muted-foreground">
-          {t("settings.aboutHint")}
-        </p>
-      </header>
-
-      <motion.div
-        initial={{ opacity: 0, scale: 0.98 }}
-        animate={{ opacity: 1, scale: 1 }}
-        transition={{ duration: 0.3, delay: 0.1 }}
-        className="rounded-xl border border-border bg-gradient-to-br from-card/80 to-card/40 p-6 space-y-5 shadow-sm"
-      >
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <div className="space-y-2">
-            <div className="flex items-center gap-2">
-              <img src={appIcon} alt="CC Switch" className="h-5 w-5" />
-              <h4 className="text-lg font-semibold text-foreground">
-                CC Switch
-              </h4>
-            </div>
-            <div className="flex items-center gap-2">
-              <Badge variant="outline" className="gap-1.5 bg-background/80">
-                <span className="text-muted-foreground">
-                  {t("common.version")}
-                </span>
-                {isLoadingVersion ? (
-                  <Loader2 className="h-3 w-3 animate-spin" />
-                ) : (
-                  <span className="font-medium">{`v${displayVersion}`}</span>
-                )}
-              </Badge>
-              {isPortable && (
-                <Badge variant="secondary" className="gap-1.5">
-                  <Info className="h-3 w-3" />
-                  {t("settings.portableMode")}
-                </Badge>
-              )}
-            </div>
-          </div>
-
-          <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="outline"
-              size="sm"
-              onClick={handleOpenReleaseNotes}
-              className="h-8 gap-1.5 text-xs"
-            >
-              <ExternalLink className="h-3.5 w-3.5" />
-              {t("settings.releaseNotes")}
-            </Button>
-            <Button
-              type="button"
-              size="sm"
-              onClick={handleCheckUpdate}
-              disabled={isChecking || isDownloading}
-              className="h-8 gap-1.5 text-xs"
-            >
-              {isDownloading ? (
-                <>
-                  <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  {t("settings.updating")}
-                </>
-              ) : hasUpdate ? (
-                <>
-                  <Download className="h-3.5 w-3.5" />
-                  {t("settings.updateTo", {
-                    version: updateInfo?.availableVersion ?? "",
-                  })}
-                </>
-              ) : isChecking ? (
-                <>
-                  <RefreshCw className="h-3.5 w-3.5 animate-spin" />
-                  {t("settings.checking")}
-                </>
-              ) : (
-                <>
-                  <RefreshCw className="h-3.5 w-3.5" />
-                  {t("settings.checkForUpdates")}
-                </>
-              )}
-            </Button>
-          </div>
+      {/* Compact app info header */}
+      <div className="flex items-center justify-between gap-3 px-1">
+        <div className="flex items-center gap-2 min-w-0">
+          <img src={appIcon} alt="CC Switch" className="h-5 w-5 shrink-0" />
+          <span className="text-sm font-medium truncate">CC Switch</span>
+          {isLoadingVersion ? (
+            <Loader2 className="h-3 w-3 animate-spin shrink-0" />
+          ) : (
+            <span className="text-xs text-muted-foreground shrink-0">{`v${displayVersion}`}</span>
+          )}
+          {isPortable && (
+            <Badge variant="secondary" className="gap-1 text-[9px] h-4 px-1 shrink-0">
+              <Info className="h-2.5 w-2.5" />
+              {t("settings.portableMode")}
+            </Badge>
+          )}
         </div>
-
-        {hasUpdate && updateInfo && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            className="rounded-lg bg-primary/10 border border-primary/20 px-4 py-3 text-sm"
+        <div className="flex items-center gap-1.5 shrink-0">
+          <Button
+            type="button"
+            variant="link"
+            size="sm"
+            onClick={handleOpenReleaseNotes}
+            className="h-7 text-xs gap-1 px-2"
           >
-            <p className="font-medium text-primary mb-1">
-              {t("settings.updateAvailable", {
-                version: updateInfo.availableVersion,
-              })}
-            </p>
-            {updateInfo.notes && (
-              <p className="text-muted-foreground line-clamp-3 leading-relaxed">
-                {updateInfo.notes}
-              </p>
+            <ExternalLink className="h-3 w-3" />
+            GitHub
+          </Button>
+          <Button
+            type="button"
+            size="sm"
+            onClick={handleCheckUpdate}
+            disabled={isChecking || isDownloading}
+            className="h-7 gap-1 text-xs"
+          >
+            {isDownloading ? (
+              <Loader2 className="h-3 w-3 animate-spin" />
+            ) : hasUpdate ? (
+              t("settings.updateTo", { version: updateInfo?.availableVersion ?? "" })
+            ) : isChecking ? (
+              <RefreshCw className="h-3 w-3 animate-spin" />
+            ) : (
+              <RefreshCw className="h-3 w-3" />
             )}
-          </motion.div>
-        )}
-      </motion.div>
+          </Button>
+        </div>
+      </div>
+
+      {hasUpdate && updateInfo && (
+        <motion.div
+          initial={{ opacity: 0, height: 0 }}
+          animate={{ opacity: 1, height: "auto" }}
+          className="rounded-lg bg-primary/10 border border-primary/20 px-4 py-2.5 text-sm"
+        >
+          <p className="font-medium text-primary">
+            {t("settings.updateAvailable", { version: updateInfo.availableVersion })}
+          </p>
+        </motion.div>
+      )}
+
+      {/* What's New — today's improvements */}
+      <div className="space-y-2 px-1">
+        <h3 className="text-sm font-medium">{t("settings.whatsNew")}</h3>
+        <div className="grid gap-2 sm:grid-cols-2">
+          {([
+            { icon: BookOpen, key: "commands" },
+            { icon: DownloadCloud, key: "skills" },
+            { icon: RefreshCw, key: "uninstallUpdate" },
+          ]).map(({ icon: Icon, key }) => (
+            <div key={key} className="rounded-lg border border-border/60 bg-card/40 px-3 py-2.5 flex items-start gap-2">
+              <Icon className="h-3.5 w-3.5 text-primary mt-0.5 shrink-0" />
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                {t(`settings.whatsNewItems.${key}`)}
+              </p>
+            </div>
+          ))}
+        </div>
+      </div>
 
       <div className="space-y-3">
           <div className="flex items-center justify-between px-1">
