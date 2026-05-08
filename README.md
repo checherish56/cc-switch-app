@@ -17,7 +17,7 @@ English | [中文](README_ZH.md) | [日本語](README_JA.md) | [Changelog](CHANG
 
 ---
 
-## v3.14.1 — What's New
+## v3.15.1 — What's New
 
 ### Claude Code Slash Commands Guide
 
