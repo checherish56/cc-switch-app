@@ -612,12 +612,6 @@
     "checking": "Checking...",
     "upToDate": "Up to Date",
     "aboutHint": "View version information and update status.",
-    "whatsNew": "What's New",
-    "whatsNewItems": {
-      "commands": "<strong>Claude Code Slash Commands Guide</strong> — Browse all 34 slash commands with search, category filters, and one-click copy. Session-only commands marked for quick input.",
-      "skills": "<strong>Skills Ecosystem</strong> — One-click install for Skills CLI (universal agent skill manager) and Anthropic Skills (17 production-ready skills for Claude Code).",
-      "uninstallUpdate": "<strong>Uninstall & Update</strong> — Manage installed tools directly from the About page. Update to latest versions or uninstall with one click."
-    },
     "portableMode": "Portable mode: updates require manual download.",
     "updateAvailable": "New version available: {{version}}",
     "updateBadge": "Update available",
