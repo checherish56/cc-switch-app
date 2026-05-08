@@ -660,6 +660,11 @@
       "installFailed": "Install failed: {{error}}",
       "checkingNpm": "Preparing...",
       "usingMirror": "npmmirror.com",
+      "uninstallButton": "Uninstall",
+      "updateButton": "Update to {{version}}",
+      "confirmUninstall": "Are you sure you want to uninstall this tool?",
+      "uninstalling": "Uninstalling...",
+      "updating": "Updating...",
       "scriptPolicyError": "PowerShell script execution is disabled on this system.",
       "scriptPolicyTitle": "How to Enable Script Execution",
       "scriptPolicyStep1": "Open PowerShell as Administrator (right-click Start → Terminal (Admin))",
@@ -667,6 +672,10 @@
       "scriptPolicyStep3": "Type Y and press Enter to confirm.",
       "scriptPolicyStep4": "Return to CC Switch and click Retry.",
       "scriptPolicyNote": "After installation, you can restore the policy with: Set-ExecutionPolicy Restricted -Scope CurrentUser"
+    },
+    "skills": {
+      "skillsCliDesc": "The `skills` CLI — a universal package manager for agent skills across 50+ coding agents. Install once, then use `skills add <repo>` to discover and install skills for Claude Code, Codex, Cursor, and more.",
+      "anthropicSkillsDesc": "Anthropic's reference skills collection — 17 production-ready skills including document tools (docx, pdf, pptx, xlsx), creative design, MCP builder, webapp testing, and more. Automatically cloned into ~/.claude/skills/ for Claude Code to discover."
     },
     "importFailedError": "Import config failed: {{message}}",
     "exportFailedError": "Export config failed:",

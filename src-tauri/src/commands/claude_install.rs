@@ -84,6 +84,29 @@ const TOOL_HERMES: ToolInfo = ToolInfo {
     display_name: "Hermes Agent",
 };
 
+const TOOL_SKILLS_CLI: ToolInfo = ToolInfo {
+    npm_package: "skills",
+    binary_name: "skills",
+    binary_name_win: "skills.cmd",
+    event_name: "skills-cli-install-progress",
+    display_name: "Skills CLI",
+};
+
+// Anthropic Skills is NOT a traditional tool — it's a git clone into ~/.claude/skills/
+const ANTHROPIC_SKILLS_EVENT: &str = "anthropic-skills-install-progress";
+const ANTHROPIC_SKILLS_REPO: &str = "https://github.com/anthropics/skills.git";
+const ANTHROPIC_SKILLS_MIRROR: &str = "https://ghfast.top/https://github.com/anthropics/skills.git";
+
+/// Known skill directories from anthropics/skills to check for existence
+const ANTHROPIC_SKILL_NAMES: &[&str] = &[
+    "docx", "pdf", "pptx", "xlsx",
+    "algorithmic-art", "brand-guidelines", "canvas-design",
+    "doc-coauthoring", "frontend-design", "internal-comms",
+    "mcp-builder", "skill-creator", "slack-gif-creator",
+    "theme-factory", "web-artifacts-builder", "webapp-testing",
+    "claude-api",
+];
+
 pub(crate) fn is_chinese_locale() -> bool {
     std::env::var("LANG")
         .or_else(|_| std::env::var("LC_ALL"))
@@ -435,6 +458,476 @@ pub async fn install_hermes(app_handle: tauri::AppHandle) -> Result<(), String> 
     let handle = app_handle.clone();
     tauri::async_runtime::spawn(async move {
         run_install_task(handle, &TOOL_HERMES).await;
+    });
+    Ok(())
+}
+
+// ─── Skills CLI ────────────────────────────────────────────
+
+#[tauri::command]
+pub async fn check_skills_cli_installed() -> Result<ToolInstallStatus, String> {
+    Ok(check_tool(&TOOL_SKILLS_CLI))
+}
+
+#[tauri::command]
+pub async fn install_skills_cli(app_handle: tauri::AppHandle) -> Result<(), String> {
+    let handle = app_handle.clone();
+    tauri::async_runtime::spawn(async move {
+        run_install_task(handle, &TOOL_SKILLS_CLI).await;
+    });
+    Ok(())
+}
+
+// ─── Anthropic Skills (git clone into ~/.claude/skills/) ───
+
+fn anthropic_skills_dir() -> Option<std::path::PathBuf> {
+    let home = dirs::home_dir()?;
+    Some(home.join(".claude").join("skills"))
+}
+
+#[tauri::command]
+pub async fn check_anthropic_skills_installed() -> Result<ToolInstallStatus, String> {
+    let skills_dir = match anthropic_skills_dir() {
+        Some(d) => d,
+        None => {
+            return Ok(ToolInstallStatus {
+                installed: false,
+                version: None,
+                install_path: None,
+                detection_method: "not_found".to_string(),
+                npm_available: false,
+            });
+        }
+    };
+
+    if !skills_dir.exists() {
+        return Ok(ToolInstallStatus {
+            installed: false,
+            version: None,
+            install_path: None,
+            detection_method: "not_found".to_string(),
+            npm_available: false,
+        });
+    }
+
+    // Count how many known anthropic skills exist
+    let mut found = 0u32;
+    for name in ANTHROPIC_SKILL_NAMES {
+        let skill_md = skills_dir.join(name).join("SKILL.md");
+        if skill_md.exists() {
+            found += 1;
+        }
+    }
+
+    if found > 0 {
+        Ok(ToolInstallStatus {
+            installed: true,
+            version: Some(format!("{} skills", found)),
+            install_path: Some(skills_dir.to_string_lossy().to_string()),
+            detection_method: "directory_scan".to_string(),
+            npm_available: false,
+        })
+    } else {
+        Ok(ToolInstallStatus {
+            installed: false,
+            version: None,
+            install_path: None,
+            detection_method: "not_found".to_string(),
+            npm_available: false,
+        })
+    }
+}
+
+#[tauri::command]
+pub async fn install_anthropic_skills(app_handle: tauri::AppHandle) -> Result<(), String> {
+    let handle = app_handle.clone();
+    tauri::async_runtime::spawn(async move {
+        run_anthropic_skills_install(handle).await;
+    });
+    Ok(())
+}
+
+async fn run_anthropic_skills_install(app_handle: tauri::AppHandle) {
+    let emit = |stage: &str, message: &str, percent: u8| {
+        let _ = app_handle.emit(
+            ANTHROPIC_SKILLS_EVENT,
+            InstallProgress {
+                stage: stage.to_string(),
+                message: message.to_string(),
+                percent,
+            },
+        );
+    };
+
+    // Check git availability
+    let git_ok = run_command("git --version")
+        .map(|o| o.status.success())
+        .unwrap_or(false);
+
+    if !git_ok {
+        emit("failed", "Git is not installed. Please install Git from https://git-scm.com", 0);
+        return;
+    }
+
+    let skills_dir = match anthropic_skills_dir() {
+        Some(d) => d,
+        None => {
+            emit("failed", "Could not determine home directory", 0);
+            return;
+        }
+    };
+
+    // Create ~/.claude/skills/ if needed
+    if let Err(e) = std::fs::create_dir_all(&skills_dir) {
+        emit("failed", &format!("Failed to create skills directory: {}", e), 0);
+        return;
+    }
+
+    let tmp_dir = std::env::temp_dir().join("cc-switch-anthropic-skills");
+    // Clean up any previous temp
+    let _ = std::fs::remove_dir_all(&tmp_dir);
+
+    emit("installing", "Cloning Anthropic skills repository...", 20);
+
+    let is_cn = is_chinese_locale();
+    let repo_url = if is_cn { ANTHROPIC_SKILLS_MIRROR } else { ANTHROPIC_SKILLS_REPO };
+
+    // Create parent temp dir first so git doesn't need to make leading dirs
+    if let Some(parent) = tmp_dir.parent() {
+        let _ = std::fs::create_dir_all(parent);
+    }
+
+    // Use direct Command::new("git") to avoid cmd /C quoting issues on Windows
+    let clone_result = {
+        #[cfg(target_os = "windows")]
+        {
+            Command::new("git")
+                .args(["clone", "--depth", "1", repo_url])
+                .arg(&tmp_dir)
+                .creation_flags(CREATE_NO_WINDOW)
+                .output()
+        }
+        #[cfg(not(target_os = "windows"))]
+        {
+            Command::new("git")
+                .args(["clone", "--depth", "1", repo_url, &tmp_dir.to_string_lossy().to_string()])
+                .output()
+        }
+    };
+
+    match clone_result {
+        Ok(output) => {
+            if !output.status.success() {
+                let stderr = String::from_utf8_lossy(&output.stderr);
+                emit("failed", &format!("Git clone failed: {}", stderr.trim()), 0);
+                return;
+            }
+        }
+        Err(e) => {
+            emit("failed", &format!("Failed to run git: {}", e), 0);
+            return;
+        }
+    }
+
+    emit("installing", "Copying skills into .claude/skills/...", 60);
+
+    let src_skills = tmp_dir.join("skills");
+    if !src_skills.exists() {
+        emit("failed", "Cloned repo missing skills/ directory", 0);
+        let _ = std::fs::remove_dir_all(&tmp_dir);
+        return;
+    }
+
+    // Copy each skill directory into ~/.claude/skills/
+    let mut copied = 0u32;
+    let mut errors = Vec::new();
+
+    if let Ok(entries) = std::fs::read_dir(&src_skills) {
+        for entry in entries.flatten() {
+            let name = entry.file_name();
+            let dest = skills_dir.join(&name);
+
+            // Remove existing to overwrite
+            let _ = std::fs::remove_dir_all(&dest);
+
+            // Recursive copy
+            if let Err(e) = copy_dir_recursive(&entry.path(), &dest) {
+                errors.push(format!("{}: {}", name.to_string_lossy(), e));
+            } else {
+                copied += 1;
+            }
+        }
+    }
+
+    // Clean up temp
+    let _ = std::fs::remove_dir_all(&tmp_dir);
+
+    if copied == 0 && !errors.is_empty() {
+        emit("failed", &format!("Failed to copy skills: {}", errors.join("; ")), 0);
+        return;
+    }
+
+    let msg = if errors.is_empty() {
+        format!("Installed {} Anthropic skills", copied)
+    } else {
+        format!("Installed {} skills ({} failed)", copied, errors.len())
+    };
+    emit("completed", &msg, 100);
+}
+
+fn copy_dir_recursive(src: &std::path::Path, dest: &std::path::Path) -> std::io::Result<()> {
+    std::fs::create_dir_all(dest)?;
+    for entry in std::fs::read_dir(src)? {
+        let entry = entry?;
+        let src_path = entry.path();
+        let dest_path = dest.join(entry.file_name());
+        if src_path.is_dir() {
+            copy_dir_recursive(&src_path, &dest_path)?;
+        } else {
+            std::fs::copy(&src_path, &dest_path)?;
+        }
+    }
+    Ok(())
+}
+
+// ─── Uninstall / Update tasks ──────────────────────────────
+
+async fn run_uninstall_task(app_handle: tauri::AppHandle, tool: &ToolInfo) {
+    let emit = |stage: &str, message: &str, percent: u8| {
+        let _ = app_handle.emit(
+            tool.event_name,
+            InstallProgress { stage: stage.to_string(), message: message.to_string(), percent },
+        );
+    };
+
+    emit("uninstalling", &format!("Uninstalling {}...", tool.display_name), 30);
+
+    // Anthropic Skills special case: handled separately
+    if tool.binary_name == "hermes" {
+        // Hermes: pip uninstall
+        let cmd = "pip uninstall -y hermes-agent";
+        match run_command(cmd) {
+            Ok(output) => {
+                if output.status.success() {
+                    emit("completed", &format!("{} uninstalled", tool.display_name), 100);
+                } else {
+                    let stderr = String::from_utf8_lossy(&output.stderr);
+                    emit("failed", &format!("Uninstall failed: {}", stderr.trim()), 0);
+                }
+            }
+            Err(e) => emit("failed", &format!("Failed to run pip: {}", e), 0),
+        }
+        return;
+    }
+
+    if tool.npm_package.is_empty() {
+        // OpenCode: remove known binary paths
+        emit("uninstalling", &format!("Removing {} binary...", tool.display_name), 50);
+        let mut removed = false;
+        if let Some(home) = dirs::home_dir() {
+            let candidates: Vec<std::path::PathBuf> = if cfg!(target_os = "windows") {
+                vec![
+                    home.join("AppData").join("Roaming").join("npm").join("opencode.cmd"),
+                    home.join(".opencode").join("bin").join("opencode.exe"),
+                ]
+            } else {
+                vec![
+                    home.join(".local").join("bin").join("opencode"),
+                    home.join(".opencode").join("bin").join("opencode"),
+                ]
+            };
+            for p in &candidates {
+                if p.exists() {
+                    let _ = std::fs::remove_file(p);
+                    removed = true;
+                }
+            }
+            // Also remove .opencode dir
+            let _ = std::fs::remove_dir_all(home.join(".opencode"));
+        }
+        if removed {
+            emit("completed", &format!("{} uninstalled", tool.display_name), 100);
+        } else {
+            emit("completed", "No files found to remove", 100);
+        }
+        return;
+    }
+
+    // npm-based tools
+    let cmd = format!("npm uninstall -g {}", tool.npm_package);
+    match run_command(&cmd) {
+        Ok(output) => {
+            if output.status.success() {
+                emit("completed", &format!("{} uninstalled", tool.display_name), 100);
+            } else {
+                let stderr = String::from_utf8_lossy(&output.stderr);
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                let err = if stderr.is_empty() { stdout } else { stderr };
+                emit("failed", &format!("Uninstall failed: {}", err.trim()), 0);
+            }
+        }
+        Err(e) => emit("failed", &format!("Failed to run npm: {}", e), 0),
+    }
+}
+
+async fn run_update_task(app_handle: tauri::AppHandle, tool: &ToolInfo) {
+    let emit = |stage: &str, message: &str, percent: u8| {
+        let _ = app_handle.emit(
+            tool.event_name,
+            InstallProgress { stage: stage.to_string(), message: message.to_string(), percent },
+        );
+    };
+
+    let is_cn = is_chinese_locale();
+    emit("updating", &format!("Updating {}...", tool.display_name), 25);
+
+    if tool.npm_package.is_empty() {
+        if tool.binary_name == "hermes" {
+            // Hermes: pip install --upgrade
+            if pip_exists() {
+                match run_command("pip install --upgrade hermes-agent") {
+                    Ok(output) => {
+                        if output.status.success() {
+                            emit("completed", &format!("{} updated", tool.display_name), 100);
+                        } else {
+                            let stderr = String::from_utf8_lossy(&output.stderr);
+                            emit("failed", &format!("Update failed: {}", stderr.trim()), 0);
+                        }
+                    }
+                    Err(e) => emit("failed", &format!("Failed to run pip: {}", e), 0),
+                }
+            } else {
+                emit("failed", "Python/pip not found. Please install Python first.", 0);
+            }
+        } else {
+            // OpenCode: re-run install script
+            run_opencode_install(&emit).await;
+        }
+        return;
+    }
+
+    // npm-based tools: install latest
+    let update_cmd = if is_cn {
+        format!(
+            "npm install -g {}@latest --registry=https://registry.npmmirror.com",
+            tool.npm_package
+        )
+    } else {
+        format!("npm install -g {}@latest", tool.npm_package)
+    };
+
+    emit("updating", &format!("Updating {} via npm...", tool.display_name), 50);
+    match run_command(&update_cmd) {
+        Ok(output) => {
+            if output.status.success() {
+                emit("completed", &format!("{} updated", tool.display_name), 100);
+            } else {
+                let stderr = String::from_utf8_lossy(&output.stderr);
+                let stdout = String::from_utf8_lossy(&output.stdout);
+                let err = if stderr.is_empty() { stdout } else { stderr };
+                let prefix = if is_script_policy_error(&output) { "[SCRIPT_POLICY]" } else { "" };
+                emit("failed", &format!("{}Update failed: {}", prefix, err.trim()), 0);
+            }
+        }
+        Err(e) => emit("failed", &format!("Failed to run npm: {}", e), 0),
+    }
+}
+
+async fn run_anthropic_skills_uninstall(app_handle: tauri::AppHandle) {
+    let emit = |stage: &str, message: &str, percent: u8| {
+        let _ = app_handle.emit(
+            ANTHROPIC_SKILLS_EVENT,
+            InstallProgress { stage: stage.to_string(), message: message.to_string(), percent },
+        );
+    };
+
+    let skills_dir = match anthropic_skills_dir() {
+        Some(d) => d,
+        None => { emit("failed", "Could not determine home directory", 0); return; }
+    };
+
+    if !skills_dir.exists() {
+        emit("completed", "No skills to remove", 100);
+        return;
+    }
+
+    emit("uninstalling", "Removing Anthropic skills...", 30);
+    let mut removed = 0u32;
+    for name in ANTHROPIC_SKILL_NAMES {
+        let dir = skills_dir.join(name);
+        if dir.exists() {
+            let _ = std::fs::remove_dir_all(&dir);
+            removed += 1;
+        }
+    }
+    emit("completed", &format!("Removed {} Anthropic skills", removed), 100);
+}
+
+async fn run_anthropic_skills_update(app_handle: tauri::AppHandle) {
+    // Update = re-clone and re-copy
+    run_anthropic_skills_install(app_handle).await;
+}
+
+// ─── Uninstall commands ────────────────────────────────────
+
+macro_rules! uninstall_cmd {
+    ($name:ident, $tool:ident, $event:expr) => {
+        #[tauri::command]
+        pub async fn $name(app_handle: tauri::AppHandle) -> Result<(), String> {
+            let handle = app_handle.clone();
+            tauri::async_runtime::spawn(async move {
+                run_uninstall_task(handle, &$tool).await;
+            });
+            Ok(())
+        }
+    };
+}
+
+uninstall_cmd!(uninstall_claude_code, TOOL_CLAUDE, "claude-install-progress");
+uninstall_cmd!(uninstall_codex, TOOL_CODEX, "codex-install-progress");
+uninstall_cmd!(uninstall_gemini, TOOL_GEMINI, "gemini-install-progress");
+uninstall_cmd!(uninstall_opencode, TOOL_OPENCODE, "opencode-install-progress");
+uninstall_cmd!(uninstall_openclaw, TOOL_OPENCLAW, "openclaw-install-progress");
+uninstall_cmd!(uninstall_hermes, TOOL_HERMES, "hermes-install-progress");
+uninstall_cmd!(uninstall_skills_cli, TOOL_SKILLS_CLI, "skills-cli-install-progress");
+
+#[tauri::command]
+pub async fn uninstall_anthropic_skills(app_handle: tauri::AppHandle) -> Result<(), String> {
+    let handle = app_handle.clone();
+    tauri::async_runtime::spawn(async move {
+        run_anthropic_skills_uninstall(handle).await;
+    });
+    Ok(())
+}
+
+// ─── Update commands ───────────────────────────────────────
+
+macro_rules! update_cmd {
+    ($name:ident, $tool:ident) => {
+        #[tauri::command]
+        pub async fn $name(app_handle: tauri::AppHandle) -> Result<(), String> {
+            let handle = app_handle.clone();
+            tauri::async_runtime::spawn(async move {
+                run_update_task(handle, &$tool).await;
+            });
+            Ok(())
+        }
+    };
+}
+
+update_cmd!(update_claude_code, TOOL_CLAUDE);
+update_cmd!(update_codex, TOOL_CODEX);
+update_cmd!(update_gemini, TOOL_GEMINI);
+update_cmd!(update_opencode, TOOL_OPENCODE);
+update_cmd!(update_openclaw, TOOL_OPENCLAW);
+update_cmd!(update_hermes, TOOL_HERMES);
+update_cmd!(update_skills_cli, TOOL_SKILLS_CLI);
+
+#[tauri::command]
+pub async fn update_anthropic_skills(app_handle: tauri::AppHandle) -> Result<(), String> {
+    let handle = app_handle.clone();
+    tauri::async_runtime::spawn(async move {
+        run_anthropic_skills_update(handle).await;
     });
     Ok(())
 }

@@ -46,7 +46,7 @@ interface ToolVersion {
   wsl_distro: string | null;
 }
 
-const TOOL_NAMES = ["claude", "codex", "gemini", "opencode", "openclaw", "hermes"] as const;
+const TOOL_NAMES = ["claude", "codex", "gemini", "opencode", "openclaw", "hermes", "skills-cli", "anthropic-skills"] as const;
 type ToolName = (typeof TOOL_NAMES)[number];
 
 type WslShellPreference = {
@@ -110,6 +110,8 @@ export function AboutSection({ isPortable }: AboutSectionProps) {
     opencode: useInstallTool("opencode"),
     openclaw: useInstallTool("openclaw"),
     hermes: useInstallTool("hermes"),
+    "skills-cli": useInstallTool("skills-cli"),
+    "anthropic-skills": useInstallTool("anthropic-skills"),
   };
   const {
     data: claudeStatus,
@@ -135,6 +137,14 @@ export function AboutSection({ isPortable }: AboutSectionProps) {
     data: hermesStatus,
     isLoading: isHermesStatusLoading,
   } = useToolInstallStatus("hermes");
+  const {
+    data: skillsCliStatus,
+    isLoading: isSkillsCliStatusLoading,
+  } = useToolInstallStatus("skills-cli");
+  const {
+    data: anthropicSkillsStatus,
+    isLoading: isAnthropicSkillsStatusLoading,
+  } = useToolInstallStatus("anthropic-skills");
 
   const toolStatusMap = {
     claude: { status: claudeStatus, loading: isClaudeStatusLoading },
@@ -143,6 +153,8 @@ export function AboutSection({ isPortable }: AboutSectionProps) {
     opencode: { status: opencodeStatus, loading: isOpencodeStatusLoading },
     openclaw: { status: openclawStatus, loading: isOpenclawStatusLoading },
     hermes: { status: hermesStatus, loading: isHermesStatusLoading },
+    "skills-cli": { status: skillsCliStatus, loading: isSkillsCliStatusLoading },
+    "anthropic-skills": { status: anthropicSkillsStatus, loading: isAnthropicSkillsStatusLoading },
   };
 
   const [wslShellByTool, setWslShellByTool] = useState<
@@ -493,6 +505,12 @@ export function AboutSection({ isPortable }: AboutSectionProps) {
                 opencode: "OpenCode",
                 openclaw: "OpenClaw",
                 hermes: "Hermes Agent",
+                "skills-cli": "Skills CLI",
+                "anthropic-skills": "Anthropic Skills",
+              };
+              const SKILL_DESCRIPTIONS: Record<string, string> = {
+                "skills-cli": t("settings.skills.skillsCliDesc"),
+                "anthropic-skills": t("settings.skills.anthropicSkillsDesc"),
               };
               const displayName =
                 DISPLAY_NAMES[toolName] ??
@@ -501,7 +519,7 @@ export function AboutSection({ isPortable }: AboutSectionProps) {
               const toolInfo = toolStatusMap[toolName];
               const toolInstall = toolInstallHooks[toolName];
               const toolNotInstalled = !toolInfo.loading && toolInfo.status && !toolInfo.status.installed;
-              const isInstalling = toolInstall.progress && toolInstall.progress.stage !== "completed" && toolInstall.progress.stage !== "failed";
+              const isBusy = toolInstall.progress && toolInstall.progress.stage !== "completed" && toolInstall.progress.stage !== "failed";
               const installProgress = toolInstall.progress;
 
               return (
@@ -573,7 +591,7 @@ export function AboutSection({ isPortable }: AboutSectionProps) {
                         </Select>
                       )}
                     </div>
-                    {isLoadingTools || loadingTools[toolName] || isInstalling ? (
+                    {isLoadingTools || loadingTools[toolName] || isBusy ? (
                       <Loader2 className="h-4 w-4 animate-spin text-muted-foreground" />
                     ) : tool?.version ? (
                       tool.latest_version &&
@@ -599,15 +617,59 @@ export function AboutSection({ isPortable }: AboutSectionProps) {
                         : tool?.error || t("common.notInstalled")}
                   </div>
 
-                  {/* Tool install button */}
-                  {!toolInfo.loading && !isInstalling && (
+                  {SKILL_DESCRIPTIONS[toolName] && (
+                    <p className="text-[11px] text-muted-foreground/70 leading-relaxed">
+                      {SKILL_DESCRIPTIONS[toolName]}
+                    </p>
+                  )}
+
+                  {/* Tool install/uninstall/update button */}
+                  {!toolInfo.loading && !isBusy && (
                     <div className="space-y-2 pt-1 border-t border-border/60">
                       {toolInfo.status?.installed && toolInfo.status.version ? (
-                        <div className="flex items-center gap-1.5 text-xs">
-                          <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
-                          <span className="text-muted-foreground">
-                            {t("settings.toolInstall.installSuccess", { version: toolInfo.status.version })}
-                          </span>
+                        <div className="space-y-2">
+                          <div className="flex items-center gap-1.5 text-xs">
+                            <CheckCircle2 className="h-3.5 w-3.5 text-green-500" />
+                            <span className="text-muted-foreground">
+                              {t("settings.toolInstall.installSuccess", { version: toolInfo.status.version })}
+                            </span>
+                          </div>
+                          <div className="flex items-center gap-1.5">
+                            {tool?.latest_version &&
+                              tool.version &&
+                              tool.version !== tool.latest_version ? (
+                              <Button
+                                size="sm"
+                                className="h-7 text-xs gap-1 flex-1"
+                                onClick={() => {
+                                  toolInstall.resetProgress();
+                                  toolInstall.update.mutate();
+                                }}
+                                disabled={toolInstall.update.isPending}
+                              >
+                                <DownloadCloud className="h-3.5 w-3.5" />
+                                {toolInstall.update.isPending
+                                  ? "..."
+                                  : t("settings.toolInstall.updateButton", { version: tool.latest_version })}
+                              </Button>
+                            ) : null}
+                            <Button
+                              size="sm"
+                              variant="outline"
+                              className="h-7 text-xs gap-1 flex-1"
+                              onClick={() => {
+                                if (confirm(t("settings.toolInstall.confirmUninstall"))) {
+                                  toolInstall.resetProgress();
+                                  toolInstall.uninstall.mutate();
+                                }
+                              }}
+                              disabled={toolInstall.uninstall.isPending}
+                            >
+                              {toolInstall.uninstall.isPending
+                                ? "..."
+                                : t("settings.toolInstall.uninstallButton")}
+                            </Button>
+                          </div>
                         </div>
                       ) : installProgress?.stage === "failed" ? (
                         <div className="space-y-2">
@@ -709,8 +771,8 @@ export function AboutSection({ isPortable }: AboutSectionProps) {
                     </div>
                   )}
 
-                  {/* Installing progress */}
-                  {isInstalling && installProgress && (
+                  {/* Progress (install/uninstall/update) */}
+                  {isBusy && installProgress && (
                     <div className="space-y-2 pt-1 border-t border-border/60">
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <Loader2 className="h-3.5 w-3.5 animate-spin" />
@@ -719,7 +781,11 @@ export function AboutSection({ isPortable }: AboutSectionProps) {
                             ? t("settings.toolInstall.installingNode")
                             : installProgress.stage === "installing"
                               ? t("settings.toolInstall.installing")
-                              : t("settings.toolInstall.checkingNpm")}
+                              : installProgress.stage === "uninstalling"
+                                ? t("settings.toolInstall.uninstalling")
+                                : installProgress.stage === "updating"
+                                  ? t("settings.toolInstall.updating")
+                                  : t("settings.toolInstall.checkingNpm")}
                         </span>
                       </div>
                       <div className="w-full bg-muted rounded-full h-1.5 overflow-hidden">

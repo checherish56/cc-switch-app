@@ -232,6 +232,71 @@ export const settingsApi = {
     await invoke("install_hermes");
   },
 
+  // ─── Skills ──────────────────────────────────────────
+
+  async checkSkillsCliInstalled(): Promise<ClaudeInstallStatus> {
+    return await invoke("check_skills_cli_installed");
+  },
+  async installSkillsCli(): Promise<void> {
+    await invoke("install_skills_cli");
+  },
+  async checkAnthropicSkillsInstalled(): Promise<ClaudeInstallStatus> {
+    return await invoke("check_anthropic_skills_installed");
+  },
+  async installAnthropicSkills(): Promise<void> {
+    await invoke("install_anthropic_skills");
+  },
+
+  async uninstallClaudeCode(): Promise<void> {
+    await invoke("uninstall_claude_code");
+  },
+  async uninstallCodex(): Promise<void> {
+    await invoke("uninstall_codex");
+  },
+  async uninstallGemini(): Promise<void> {
+    await invoke("uninstall_gemini");
+  },
+  async uninstallOpencode(): Promise<void> {
+    await invoke("uninstall_opencode");
+  },
+  async uninstallOpenclaw(): Promise<void> {
+    await invoke("uninstall_openclaw");
+  },
+  async uninstallHermes(): Promise<void> {
+    await invoke("uninstall_hermes");
+  },
+  async uninstallSkillsCli(): Promise<void> {
+    await invoke("uninstall_skills_cli");
+  },
+  async uninstallAnthropicSkills(): Promise<void> {
+    await invoke("uninstall_anthropic_skills");
+  },
+
+  async updateClaudeCode(): Promise<void> {
+    await invoke("update_claude_code");
+  },
+  async updateCodex(): Promise<void> {
+    await invoke("update_codex");
+  },
+  async updateGemini(): Promise<void> {
+    await invoke("update_gemini");
+  },
+  async updateOpencode(): Promise<void> {
+    await invoke("update_opencode");
+  },
+  async updateOpenclaw(): Promise<void> {
+    await invoke("update_openclaw");
+  },
+  async updateHermes(): Promise<void> {
+    await invoke("update_hermes");
+  },
+  async updateSkillsCli(): Promise<void> {
+    await invoke("update_skills_cli");
+  },
+  async updateAnthropicSkills(): Promise<void> {
+    await invoke("update_anthropic_skills");
+  },
+
   async getRectifierConfig(): Promise<RectifierConfig> {
     return await invoke("get_rectifier_config");
   },
@@ -312,7 +377,7 @@ export interface ClaudeInstallStatus {
 }
 
 export interface InstallProgress {
-  stage: "checking_npm" | "installing_node" | "installing" | "completed" | "failed";
+  stage: "checking_npm" | "installing_node" | "installing" | "completed" | "failed" | "uninstalling" | "updating";
   message: string;
   percent: number;
 }

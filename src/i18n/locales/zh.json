@@ -660,6 +660,11 @@
       "installFailed": "安装失败: {{error}}",
       "checkingNpm": "准备中...",
       "usingMirror": "使用 npmmirror.com 镜像",
+      "uninstallButton": "卸载",
+      "updateButton": "更新到 {{version}}",
+      "confirmUninstall": "确定要卸载此工具吗？",
+      "uninstalling": "正在卸载...",
+      "updating": "正在更新...",
       "scriptPolicyError": "系统已禁用 PowerShell 脚本执行。",
       "scriptPolicyTitle": "如何开启脚本执行权限",
       "scriptPolicyStep1": "以管理员身份打开 PowerShell（右键开始菜单 → 终端(管理员)）",
@@ -667,6 +672,10 @@
       "scriptPolicyStep3": "输入 Y 并按回车确认。",
       "scriptPolicyStep4": "返回 CC Switch 点击重试按钮。",
       "scriptPolicyNote": "安装完成后，可恢复策略：Set-ExecutionPolicy Restricted -Scope CurrentUser"
+    },
+    "skills": {
+      "skillsCliDesc": "`skills` CLI — 通用 Agent Skills 包管理器，支持 50+ 编程助手。安装后使用 `skills add <仓库>` 即可为 Claude Code、Codex、Cursor 等工具发现并安装技能。",
+      "anthropicSkillsDesc": "Anthropic 官方参考技能集 — 17 个生产级技能，包括文档工具（docx、pdf、pptx、xlsx）、创意设计、MCP 构建器、Web 应用测试等。自动克隆到 ~/.claude/skills/ 供 Claude Code 发现使用。"
     },
     "importFailedError": "导入配置失败：{{message}}",
     "exportFailedError": "导出配置失败:",
