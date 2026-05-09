@@ -69,21 +69,97 @@
     "emptyHint": "下の「編集内容から抽出」ボタンをクリックして、現在の設定から再利用可能な部分を抽出してください"
   },
   "claudeConfig": {
-    "configLabel": "Claude Code settings.json (JSON) *",
-    "writeCommonConfig": "共通設定を書き込む",
-    "editCommonConfig": "共通設定を編集",
-    "editCommonConfigTitle": "共通設定スニペットを編集",
-    "commonConfigHint": "「共通設定を書き込む」がオンのとき settings.json にマージされます",
-    "fullSettingsHint": "Claude Code の settings.json 全文",
-    "extractFromCurrent": "編集内容から抽出",
-    "extractNoCommonConfig": "編集内容から抽出できる共通設定がありません",
-    "extractFailed": "抽出に失敗しました: {{error}}",
-    "saveFailed": "保存に失敗しました: {{error}}",
-    "hideAttribution": "AI署名を非表示",
-    "enableTeammates": "Teammates モード",
-    "enableToolSearch": "Tool Search を有効化",
-    "effortMax": "最大強度思考",
-    "disableAutoUpgrade": "自動アップグレードを無効化"
+    "title": "Claude Code 設定",
+    "description": "~/.claude/settings.json を直接編集",
+    "fileNotExists": "ファイルが存在しません。保存時に作成されます。",
+    "saveSuccess": "Claude Code 設定を保存しました",
+    "saveFailed": "Claude Code 設定の保存に失敗しました",
+    "managedKeys": {
+      "title": "以下の設定はプロバイダー切り替えによって管理されています：",
+      "topLevel": "トップレベル: {{keys}}",
+      "envKeys": "環境変数: {{keys}}"
+    },
+    "permissions": {
+      "title": "権限管理",
+      "description": "Claude Code ツールの権限と承認動作を制御します",
+      "defaultMode": "デフォルトモード",
+      "modeDefault": "デフォルト（各ツールの使用時に確認）",
+      "modeAcceptEdits": "編集を承認（編集操作を自動承認）",
+      "modeBypass": "権限バイパス（すべての権限プロンプトをスキップ）",
+      "modePlan": "プランモード（読み取り専用）",
+      "allow": "許可リスト",
+      "allowHint": "自動許可するツール。Bash(npm run *), Read(.env*), Edit(/src/**) などのパターンを使用",
+      "deny": "拒否リスト",
+      "denyHint": "常に拒否するツール。拒否ルールは許可ルールより優先されます。",
+      "ask": "確認リスト",
+      "askHint": "毎回ユーザー確認が必要なツール。",
+      "addAllow": "許可ツールを追加",
+      "addDeny": "拒否ツールを追加",
+      "addAsk": "確認ルールを追加",
+      "additionalDirectories": "追加ディレクトリ",
+      "additionalDirsHint": "プロジェクトルート以外で Claude がアクセスできるディレクトリ。",
+      "addDirectory": "ディレクトリを追加"
+    },
+    "hooks": {
+      "title": "フック (Hooks)",
+      "description": "Claude Code イベント（ツール実行前後など）で実行されるシェルコマンド",
+      "envHint": "利用可能な環境変数: $CLAUDE_FILE_PATH, $CLAUDE_PROJECT_DIR, $ARGUMENTS",
+      "noHooks": "フックが設定されていません",
+      "matcher": "マッチャー",
+      "timeout": "タイムアウト (ms)",
+      "addEvent": "+ フックイベントを追加...",
+      "addMatcher": "マッチャーエントリを追加",
+      "addHandler": "ハンドラーを追加",
+      "events": {
+        "SessionStart": "セッション開始",
+        "UserPromptSubmit": "プロンプト送信",
+        "PreToolUse": "ツール実行前",
+        "PermissionRequest": "権限リクエスト",
+        "PostToolUse": "ツール実行後",
+        "PostToolUseFailure": "ツール失敗後",
+        "Notification": "通知",
+        "SubagentStart": "サブエージェント開始",
+        "SubagentStop": "サブエージェント停止",
+        "Stop": "応答終了",
+        "PreCompact": "圧縮前",
+        "SessionEnd": "セッション終了",
+        "ConfigChange": "設定変更",
+        "WorktreeCreate": "ワークツリー作成",
+        "WorktreeRemove": "ワークツリー削除"
+      }
+    },
+    "sandbox": {
+      "title": "サンドボックス",
+      "description": "Claude Code のファイルシステムとネットワークアクセスを分離するセキュリティサンドボックス",
+      "enabled": "サンドボックスを有効化",
+      "enabledHint": "分離されたサンドボックス環境でコマンドを実行",
+      "autoAllowBash": "サンドボックス内で Bash を自動許可",
+      "autoAllowBashHint": "サンドボックス内で実行時に Bash コマンドを自動承認",
+      "denyWrite": "書き込み禁止パス",
+      "denyWriteHint": "サンドボックスが書き込めないファイルパス",
+      "denyRead": "読み取り禁止パス",
+      "denyReadHint": "サンドボックスが読み取れないファイルパス",
+      "addDenyWrite": "パスを追加",
+      "addDenyRead": "パスを追加"
+    },
+    "env": {
+      "title": "環境変数",
+      "description": "Claude Code に渡す環境変数（プロバイダー管理の変数はプロバイダーから編集してください）",
+      "add": "変数を追加"
+    },
+    "other": {
+      "title": "その他の設定",
+      "description": "その他の Claude Code 設定",
+      "model": "モデル",
+      "modelManaged": "プロバイダーにより管理",
+      "cleanupPeriodDays": "セッションクリーンアップ（日）",
+      "showTurnDuration": "応答時間を表示",
+      "showTurnDurationHint": "各ターンの応答時間を表示",
+      "spinnerTipsEnabled": "スピナーヒントを表示",
+      "spinnerTipsEnabledHint": "ローディング中にヒントを表示",
+      "attributionCommit": "Git 帰属 (Co-Authored-By)",
+      "attributionHint": "空の場合はコミットに Co-Authored-By を追加しません"
+    }
   },
   "header": {
     "viewOnGithub": "GitHub で見る",
@@ -268,6 +344,8 @@
     "tabGeneral": "一般",
     "tabAuth": "認証",
     "tabClaudeConfig": "Claude 設定",
+    "tabConfiguration": "設定",
+    "tabTutorial": "チュートリアル",
     "tabAdvanced": "詳細",
     "tabProxy": "ルーティング",
     "authCenter": {
@@ -1057,7 +1135,31 @@
     "modelNamePlaceholder": "例: gpt-5-codex",
     "contextWindow1M": "1M コンテキストウィンドウ",
     "autoCompactLimit": "自動圧縮しきい値",
-    "autoCompactLimitHint": "コンテキストトークン数がこのしきい値に達すると履歴を自動圧縮"
+    "autoCompactLimitHint": "コンテキストトークン数がこのしきい値に達すると履歴を自動圧縮",
+    "panel": {
+      "title": "Codex 設定",
+      "fileNotExists": "ファイルはまだ存在していません。保存時に自動的に作成されます。",
+      "saveSuccess": "Codex 設定を保存しました",
+      "saveFailed": "Codex 設定の保存に失敗しました",
+      "authSaved": "auth.json を保存しました",
+      "authSaveFailed": "無効な JSON 形式",
+      "fieldUpdated": "フィールドを更新しました",
+      "updateFailed": "更新に失敗しました",
+      "configToml": {
+        "title": "config.toml",
+        "description": "TOML 形式の設定ファイル"
+      },
+      "authJson": {
+        "title": "auth.json",
+        "description": "認証情報"
+      },
+      "quickSettings": {
+        "title": "クイック設定",
+        "description": "よく使うフィールドの編集（構文を保持する TOML 編集）"
+      },
+      "modelName": "モデル名",
+      "baseUrl": "API ベース URL"
+    }
   },
   "geminiConfig": {
     "envFile": "環境変数 (.env)",
@@ -1114,7 +1216,23 @@
     "modelExtraFieldKeyPlaceholder": "variants",
     "sdkOptions": "SDK オプション",
     "modelOptionKeyPlaceholder": "provider",
-    "modelOptionValuePlaceholder": "{\"order\": [\"baseten\"]}"
+    "modelOptionValuePlaceholder": "{\"order\": [\"baseten\"]}",
+    "panel": {
+      "title": "OpenCode 設定",
+      "fileNotExists": "ファイルはまだ存在していません。保存時に自動的に作成されます。",
+      "saveSuccess": "OpenCode 設定を保存しました",
+      "saveFailed": "OpenCode 設定の保存に失敗しました",
+      "invalidJson": "無効な JSON 形式",
+      "mustBeObject": "設定は JSON オブジェクトでなければなりません",
+      "configFile": {
+        "title": "opencode.json",
+        "description": "JSON 形式の設定ファイル"
+      },
+      "providersList": {
+        "title": "設定済みプロバイダー",
+        "description": "この設定内のプロバイダー（読み取り専用）"
+      }
+    }
   },
   "providerPreset": {
     "label": "プロバイダータイプ",
@@ -2596,99 +2714,6 @@
     "queryFailed": "クエリに失敗しました",
     "refresh": "更新"
   },
-  "claudeConfig": {
-    "title": "Claude Code 設定",
-    "description": "~/.claude/settings.json を直接編集",
-    "fileNotExists": "ファイルが存在しません。保存時に作成されます。",
-    "saveSuccess": "Claude Code 設定を保存しました",
-    "saveFailed": "Claude Code 設定の保存に失敗しました",
-    "managedKeys": {
-      "title": "以下の設定はプロバイダー切り替えによって管理されています：",
-      "topLevel": "トップレベル: {{keys}}",
-      "envKeys": "環境変数: {{keys}}"
-    },
-    "permissions": {
-      "title": "権限管理",
-      "description": "Claude Code ツールの権限と承認動作を制御します",
-      "defaultMode": "デフォルトモード",
-      "modeDefault": "デフォルト（各ツールの使用時に確認）",
-      "modeAcceptEdits": "編集を承認（編集操作を自動承認）",
-      "modeBypass": "権限バイパス（すべての権限プロンプトをスキップ）",
-      "modePlan": "プランモード（読み取り専用）",
-      "allow": "許可リスト",
-      "allowHint": "自動許可するツール。Bash(npm run *), Read(.env*), Edit(/src/**) などのパターンを使用",
-      "deny": "拒否リスト",
-      "denyHint": "常に拒否するツール。拒否ルールは許可ルールより優先されます。",
-      "ask": "確認リスト",
-      "askHint": "毎回ユーザー確認が必要なツール。",
-      "addAllow": "許可ツールを追加",
-      "addDeny": "拒否ツールを追加",
-      "addAsk": "確認ルールを追加",
-      "additionalDirectories": "追加ディレクトリ",
-      "additionalDirsHint": "プロジェクトルート以外で Claude がアクセスできるディレクトリ。",
-      "addDirectory": "ディレクトリを追加"
-    },
-    "hooks": {
-      "title": "フック (Hooks)",
-      "description": "Claude Code イベント（ツール実行前後など）で実行されるシェルコマンド",
-      "envHint": "利用可能な環境変数: $CLAUDE_FILE_PATH, $CLAUDE_PROJECT_DIR, $ARGUMENTS",
-      "noHooks": "フックが設定されていません",
-      "matcher": "マッチャー",
-      "timeout": "タイムアウト (ms)",
-      "addEvent": "+ フックイベントを追加...",
-      "addMatcher": "マッチャーエントリを追加",
-      "addHandler": "ハンドラーを追加",
-      "events": {
-        "SessionStart": "セッション開始",
-        "UserPromptSubmit": "プロンプト送信",
-        "PreToolUse": "ツール実行前",
-        "PermissionRequest": "権限リクエスト",
-        "PostToolUse": "ツール実行後",
-        "PostToolUseFailure": "ツール失敗後",
-        "Notification": "通知",
-        "SubagentStart": "サブエージェント開始",
-        "SubagentStop": "サブエージェント停止",
-        "Stop": "応答終了",
-        "PreCompact": "圧縮前",
-        "SessionEnd": "セッション終了",
-        "ConfigChange": "設定変更",
-        "WorktreeCreate": "ワークツリー作成",
-        "WorktreeRemove": "ワークツリー削除"
-      }
-    },
-    "sandbox": {
-      "title": "サンドボックス",
-      "description": "Claude Code のファイルシステムとネットワークアクセスを分離するセキュリティサンドボックス",
-      "enabled": "サンドボックスを有効化",
-      "enabledHint": "分離されたサンドボックス環境でコマンドを実行",
-      "autoAllowBash": "サンドボックス内で Bash を自動許可",
-      "autoAllowBashHint": "サンドボックス内で実行時に Bash コマンドを自動承認",
-      "denyWrite": "書き込み禁止パス",
-      "denyWriteHint": "サンドボックスが書き込めないファイルパス",
-      "denyRead": "読み取り禁止パス",
-      "denyReadHint": "サンドボックスが読み取れないファイルパス",
-      "addDenyWrite": "パスを追加",
-      "addDenyRead": "パスを追加"
-    },
-    "env": {
-      "title": "環境変数",
-      "description": "Claude Code に渡す環境変数（プロバイダー管理の変数はプロバイダーから編集してください）",
-      "add": "変数を追加"
-    },
-    "other": {
-      "title": "その他の設定",
-      "description": "その他の Claude Code 設定",
-      "model": "モデル",
-      "modelManaged": "プロバイダーにより管理",
-      "cleanupPeriodDays": "セッションクリーンアップ（日）",
-      "showTurnDuration": "応答時間を表示",
-      "showTurnDurationHint": "各ターンの応答時間を表示",
-      "spinnerTipsEnabled": "スピナーヒントを表示",
-      "spinnerTipsEnabledHint": "ローディング中にヒントを表示",
-      "attributionCommit": "Git 帰属 (Co-Authored-By)",
-      "attributionHint": "空の場合はコミットに Co-Authored-By を追加しません"
-    }
-  },
   "claudeLaunch": {
     "title": "Claude Code 起動設定",
     "description": "CLIパラメータを設定します。起動時にClaude Codeに渡されます。",
@@ -2724,14 +2749,14 @@
     "launch": "起動"
   },
   "commands": {
-    "title": "Claude Code スラッシュコマンド",
-    "description": "Claude Codeの/コマンドリファレンスガイド。クリックしてコピーし、ターミナルで使用できます。",
+    "title": "AIコーディングエージェント スラッシュコマンドチュートリアル",
+    "description": "AIコーディングツールのスラッシュコマンドリファレンスガイド。クリックでコピーして端末で使用できます。",
+    "multiAgentDescription": "すべてのAIコーディングエージェント（Claude Code、Codex、OpenCode、OpenClaw、Hermes）のスラッシュコマンドリファレンス。クリックしてコピーしターミナルで使用できます。",
     "searchPlaceholder": "コマンドを検索...",
     "copyCommand": "コピー",
     "openTerminal": "ターミナルを開く",
     "copied": "コピーしました: {{cmd}}",
     "cliHint": "CLIフラグ: {{flag}} — 起動設定で事前設定可能",
-    "sessionOnlyHint": "セッション中のみ — Claude Codeの実行中のみ有効",
     "categories": {
       "session": "セッション管理",
       "config": "設定",
@@ -2740,145 +2765,652 @@
       "account": "アカウント",
       "dev": "開発"
     },
-    "help": {
-      "description": "ヘルプを表示し、利用可能なすべてのスラッシュコマンドをリストします。",
-      "usage": "/help または /help <トピック> で特定のトピックの詳細ヘルプを表示。"
+    "claude": {
+      "sessionOnlyHint": "セッション中のみ — Claude Codeの実行中のみ有効",
+      "help": {
+        "description": "ヘルプを表示し、利用可能なすべてのスラッシュコマンドをリストします。",
+        "usage": "/help または /help <トピック> で特定のトピックの詳細ヘルプを表示。"
+      },
+      "clear": {
+        "description": "会話履歴をクリアして新しく始めます。",
+        "usage": "/clear"
+      },
+      "compact": {
+        "description": "コンテキストウィンドウを圧縮してメモリを解放し、重要な情報を保持します。",
+        "usage": "/compact"
+      },
+      "cost": {
+        "description": "現在のセッションのトークン使用量とコストを表示します。",
+        "usage": "/cost"
+      },
+      "status": {
+        "description": "モデル、権限、アクティブな設定を含む現在のセッション状態を表示します。",
+        "usage": "/status"
+      },
+      "context": {
+        "description": "コンテキストウィンドウの使用量、トークン数、残り容量を表示します。",
+        "usage": "/context"
+      },
+      "bashes": {
+        "description": "セッション中に実行されたbashコマンドの履歴を表示します。",
+        "usage": "/bashes"
+      },
+      "todos": {
+        "description": "現在のタスクリストと進捗を表示します。",
+        "usage": "/todos"
+      },
+      "resume": {
+        "description": "最近のセッションから以前の会話を再開します。",
+        "usage": "/resume"
+      },
+      "rename": {
+        "description": "現在の会話をカスタムタイトルに名前変更します。",
+        "usage": "/rename <新しいタイトル>"
+      },
+      "export": {
+        "description": "現在の会話をファイルにエクスポートします。",
+        "usage": "/export"
+      },
+      "config": {
+        "description": "設定パネルを開いて設定を表示・編集します。",
+        "usage": "/config"
+      },
+      "init": {
+        "description": "現在のプロジェクトディレクトリにCLAUDE.mdファイルを初期化します。",
+        "usage": "/init"
+      },
+      "model": {
+        "description": "現在のセッションのアクティブモデルを切り替えます。",
+        "usage": "/model <モデルID>"
+      },
+      "effort": {
+        "description": "推論の努力レベルを設定します（low/medium/high/max）。",
+        "usage": "/effort <レベル>"
+      },
+      "outputStyle": {
+        "description": "セッションの出力形式を設定します（text/json/stream-json）。",
+        "usage": "/output-style <形式>"
+      },
+      "permissions": {
+        "description": "現在のセッションのツール権限設定を管理します。",
+        "usage": "/permissions"
+      },
+      "approvedTools": {
+        "description": "承認されたツールのリストを表示・管理します。",
+        "usage": "/approved-tools"
+      },
+      "addDir": {
+        "description": "現在のセッションのワークスペースにディレクトリを追加します。",
+        "usage": "/add-dir <パス>"
+      },
+      "ide": {
+        "description": "IDE統合設定を構成します。",
+        "usage": "/ide"
+      },
+      "theme": {
+        "description": "ターミナルの表示テーマを変更します（dark/light/system）。",
+        "usage": "/theme <dark|light|system>"
+      },
+      "terminalSetup": {
+        "description": "端末のキーバインディング（改行/貼り付け動作）を設定します。",
+        "usage": "/terminal-setup"
+      },
+      "agents": {
+        "description": "カスタムAIエージェントとその設定を管理します。",
+        "usage": "/agents"
+      },
+      "memory": {
+        "description": "メモリファイル（CLAUDE.md, USER.md）を開いて編集します。",
+        "usage": "/memory"
+      },
+      "review": {
+        "description": "現在のブランチの変更のコードレビューをリクエストします。",
+        "usage": "/review"
+      },
+      "securityReview": {
+        "description": "現在の変更に対してセキュリティレビューを実行します。",
+        "usage": "/security-review"
+      },
+      "simplify": {
+        "description": "選択したコードを簡素化してリファクタリングします。",
+        "usage": "/simplify"
+      },
+      "prComments": {
+        "description": "現在の変更のPRレビューコメントを生成します。",
+        "usage": "/pr-comments"
+      },
+      "doctor": {
+        "description": "Claude Codeのインストールと設定の問題を診断します。",
+        "usage": "/doctor"
+      },
+      "upgrade": {
+        "description": "Claude Codeのアップデートを確認してインストールします。",
+        "usage": "/upgrade"
+      },
+      "releaseNotes": {
+        "description": "現在または最新バージョンのリリースノートを表示します。",
+        "usage": "/release-notes"
+      },
+      "login": {
+        "description": "Anthropicアカウントにログインします。",
+        "usage": "/login"
+      },
+      "logout": {
+        "description": "Anthropicアカウントからログアウトします。",
+        "usage": "/logout"
+      },
+      "stats": {
+        "description": "アカウントの使用統計を表示します。",
+        "usage": "/stats"
+      },
+      "test": {
+        "description": "プロジェクト設定で定義されたテストを実行します。",
+        "usage": "/test"
+      }
     },
-    "clear": {
-      "description": "会話履歴をクリアして新しく始めます。",
-      "usage": "/clear"
+    "codex": {
+      "sessionOnlyHint": "セッション中のみ — Codexの実行中のみ有効",
+      "help": {
+        "description": "ヘルプを表示し、利用可能なすべてのスラッシュコマンドをリストします。",
+        "usage": "/help または /help <トピック> で特定のトピックの詳細ヘルプを表示。"
+      },
+      "clear": {
+        "description": "会話履歴をクリアして新しく始めます。",
+        "usage": "/clear"
+      },
+      "compact": {
+        "description": "コンテキストウィンドウを圧縮してメモリを解放し、重要な情報を保持します。",
+        "usage": "/compact"
+      },
+      "cost": {
+        "description": "現在のセッションのトークン使用量とコストを表示します。",
+        "usage": "/cost"
+      },
+      "status": {
+        "description": "モデル、権限、アクティブな設定を含む現在のセッション状態を表示します。",
+        "usage": "/status"
+      },
+      "context": {
+        "description": "コンテキストウィンドウの使用量、トークン数、残り容量を表示します。",
+        "usage": "/context"
+      },
+      "bashes": {
+        "description": "セッション中に実行されたbashコマンドの履歴を表示します。",
+        "usage": "/bashes"
+      },
+      "todos": {
+        "description": "現在のタスクリストと進捗を表示します。",
+        "usage": "/todos"
+      },
+      "resume": {
+        "description": "最近のセッションから以前の会話を再開します。",
+        "usage": "/resume"
+      },
+      "rename": {
+        "description": "現在の会話をカスタムタイトルに名前変更します。",
+        "usage": "/rename <新しいタイトル>"
+      },
+      "export": {
+        "description": "現在の会話をファイルにエクスポートします。",
+        "usage": "/export"
+      },
+      "config": {
+        "description": "設定パネルを開いて設定を表示・編集します。",
+        "usage": "/config"
+      },
+      "init": {
+        "description": "現在のプロジェクトディレクトリにCODEX.mdファイルを初期化します。",
+        "usage": "/init"
+      },
+      "model": {
+        "description": "現在のセッションのアクティブモデルを切り替えます。",
+        "usage": "/model <モデルID>"
+      },
+      "permissions": {
+        "description": "現在のセッションのツール権限設定を管理します。",
+        "usage": "/permissions"
+      },
+      "addDir": {
+        "description": "現在のセッションのワークスペースにディレクトリを追加します。",
+        "usage": "/add-dir <パス>"
+      },
+      "ide": {
+        "description": "IDE統合設定を構成します。",
+        "usage": "/ide"
+      },
+      "theme": {
+        "description": "ターミナルの表示テーマを変更します（dark/light/system）。",
+        "usage": "/theme <dark|light|system>"
+      },
+      "terminalSetup": {
+        "description": "端末のキーバインディング（改行/貼り付け動作）を設定します。",
+        "usage": "/terminal-setup"
+      },
+      "agents": {
+        "description": "カスタムAIエージェントとその設定を管理します。",
+        "usage": "/agents"
+      },
+      "memory": {
+        "description": "メモリファイル（CODEX.md, USER.md）を開いて編集します。",
+        "usage": "/memory"
+      },
+      "review": {
+        "description": "現在のブランチの変更のコードレビューをリクエストします。",
+        "usage": "/review"
+      },
+      "securityReview": {
+        "description": "現在の変更に対してセキュリティレビューを実行します。",
+        "usage": "/security-review"
+      },
+      "simplify": {
+        "description": "選択したコードを簡素化してリファクタリングします。",
+        "usage": "/simplify"
+      },
+      "prComments": {
+        "description": "現在の変更のPRレビューコメントを生成します。",
+        "usage": "/pr-comments"
+      },
+      "doctor": {
+        "description": "Codexのインストールと設定の問題を診断します。",
+        "usage": "/doctor"
+      },
+      "upgrade": {
+        "description": "Codexのアップデートを確認してインストールします。",
+        "usage": "/upgrade"
+      },
+      "releaseNotes": {
+        "description": "現在または最新バージョンのリリースノートを表示します。",
+        "usage": "/release-notes"
+      },
+      "login": {
+        "description": "OpenAIアカウントにログインします。",
+        "usage": "/login"
+      },
+      "logout": {
+        "description": "OpenAIアカウントからログアウトします。",
+        "usage": "/logout"
+      },
+      "stats": {
+        "description": "アカウントの使用統計を表示します。",
+        "usage": "/stats"
+      },
+      "test": {
+        "description": "プロジェクト設定で定義されたテストを実行します。",
+        "usage": "/test"
+      }
     },
-    "compact": {
-      "description": "コンテキストウィンドウを圧縮してメモリを解放し、重要な情報を保持します。",
-      "usage": "/compact"
+    "opencode": {
+      "sessionOnlyHint": "セッション中のみ — OpenCodeの実行中のみ有効",
+      "help": {
+        "description": "ヘルプを表示し、利用可能なすべてのスラッシュコマンドをリストします。",
+        "usage": "/help または /help <トピック> で特定のトピックの詳細ヘルプを表示。"
+      },
+      "clear": {
+        "description": "会話履歴をクリアして新しく始めます。",
+        "usage": "/clear"
+      },
+      "compact": {
+        "description": "コンテキストウィンドウを圧縮してメモリを解放し、重要な情報を保持します。",
+        "usage": "/compact"
+      },
+      "cost": {
+        "description": "現在のセッションのトークン使用量とコストを表示します。",
+        "usage": "/cost"
+      },
+      "status": {
+        "description": "モデル、権限、アクティブな設定を含む現在のセッション状態を表示します。",
+        "usage": "/status"
+      },
+      "context": {
+        "description": "コンテキストウィンドウの使用量、トークン数、残り容量を表示します。",
+        "usage": "/context"
+      },
+      "bashes": {
+        "description": "セッション中に実行されたbashコマンドの履歴を表示します。",
+        "usage": "/bashes"
+      },
+      "todos": {
+        "description": "現在のタスクリストと進捗を表示します。",
+        "usage": "/todos"
+      },
+      "resume": {
+        "description": "最近のセッションから以前の会話を再開します。",
+        "usage": "/resume"
+      },
+      "rename": {
+        "description": "現在の会話をカスタムタイトルに名前変更します。",
+        "usage": "/rename <新しいタイトル>"
+      },
+      "export": {
+        "description": "現在の会話をファイルにエクスポートします。",
+        "usage": "/export"
+      },
+      "config": {
+        "description": "設定パネルを開いて設定を表示・編集します。",
+        "usage": "/config"
+      },
+      "init": {
+        "description": "現在のプロジェクトディレクトリにAGENTS.mdファイルを初期化します。",
+        "usage": "/init"
+      },
+      "model": {
+        "description": "現在のセッションのアクティブモデルを切り替えます。",
+        "usage": "/model <モデルID>"
+      },
+      "permissions": {
+        "description": "現在のセッションのツール権限設定を管理します。",
+        "usage": "/permissions"
+      },
+      "addDir": {
+        "description": "現在のセッションのワークスペースにディレクトリを追加します。",
+        "usage": "/add-dir <パス>"
+      },
+      "ide": {
+        "description": "IDE統合設定を構成します。",
+        "usage": "/ide"
+      },
+      "theme": {
+        "description": "ターミナルの表示テーマを変更します（dark/light/system）。",
+        "usage": "/theme <dark|light|system>"
+      },
+      "agents": {
+        "description": "カスタムAIエージェントとその設定を管理します。",
+        "usage": "/agents"
+      },
+      "memory": {
+        "description": "メモリファイル（CLAUDE.md, USER.md）を開いて編集します。",
+        "usage": "/memory"
+      },
+      "review": {
+        "description": "現在のブランチの変更のコードレビューをリクエストします。",
+        "usage": "/review"
+      },
+      "simplify": {
+        "description": "選択したコードを簡素化してリファクタリングします。",
+        "usage": "/simplify"
+      },
+      "prComments": {
+        "description": "現在の変更のPRレビューコメントを生成します。",
+        "usage": "/pr-comments"
+      },
+      "doctor": {
+        "description": "OpenCodeのインストールと設定の問題を診断します。",
+        "usage": "/doctor"
+      },
+      "upgrade": {
+        "description": "OpenCodeのアップデートを確認してインストールします。",
+        "usage": "/upgrade"
+      },
+      "releaseNotes": {
+        "description": "現在または最新バージョンのリリースノートを表示します。",
+        "usage": "/release-notes"
+      },
+      "login": {
+        "description": "OpenCodeアカウントにログインします。",
+        "usage": "/login"
+      },
+      "logout": {
+        "description": "OpenCodeアカウントからログアウトします。",
+        "usage": "/logout"
+      },
+      "test": {
+        "description": "プロジェクト設定で定義されたテストを実行します。",
+        "usage": "/test"
+      }
     },
-    "cost": {
-      "description": "現在のセッションのトークン使用量とコストを表示します。",
-      "usage": "/cost"
+    "openclaw": {
+      "sessionOnlyHint": "セッション中のみ — OpenClawの実行中のみ有効",
+      "help": {
+        "description": "ヘルプを表示し、利用可能なすべてのスラッシュコマンドをリストします。",
+        "usage": "/help または /help <トピック> で特定のトピックの詳細ヘルプを表示。"
+      },
+      "clear": {
+        "description": "会話履歴をクリアして新しく始めます。",
+        "usage": "/clear"
+      },
+      "compact": {
+        "description": "コンテキストウィンドウを圧縮してメモリを解放し、重要な情報を保持します。",
+        "usage": "/compact"
+      },
+      "cost": {
+        "description": "現在のセッションのトークン使用量とコストを表示します。",
+        "usage": "/cost"
+      },
+      "status": {
+        "description": "モデル、権限、アクティブな設定を含む現在のセッション状態を表示します。",
+        "usage": "/status"
+      },
+      "context": {
+        "description": "コンテキストウィンドウの使用量、トークン数、残り容量を表示します。",
+        "usage": "/context"
+      },
+      "bashes": {
+        "description": "セッション中に実行されたbashコマンドの履歴を表示します。",
+        "usage": "/bashes"
+      },
+      "todos": {
+        "description": "現在のタスクリストと進捗を表示します。",
+        "usage": "/todos"
+      },
+      "resume": {
+        "description": "最近のセッションから以前の会話を再開します。",
+        "usage": "/resume"
+      },
+      "rename": {
+        "description": "現在の会話をカスタムタイトルに名前変更します。",
+        "usage": "/rename <新しいタイトル>"
+      },
+      "export": {
+        "description": "現在の会話をファイルにエクスポートします。",
+        "usage": "/export"
+      },
+      "config": {
+        "description": "設定パネルを開いて設定を表示・編集します。",
+        "usage": "/config"
+      },
+      "init": {
+        "description": "現在のプロジェクトディレクトリにAGENTS.mdファイルを初期化します。",
+        "usage": "/init"
+      },
+      "model": {
+        "description": "現在のセッションのアクティブモデルを切り替えます。",
+        "usage": "/model <モデルID>"
+      },
+      "permissions": {
+        "description": "現在のセッションのツール権限設定を管理します。",
+        "usage": "/permissions"
+      },
+      "addDir": {
+        "description": "現在のセッションのワークスペースにディレクトリを追加します。",
+        "usage": "/add-dir <パス>"
+      },
+      "ide": {
+        "description": "IDE統合設定を構成します。",
+        "usage": "/ide"
+      },
+      "theme": {
+        "description": "ターミナルの表示テーマを変更します（dark/light/system）。",
+        "usage": "/theme <dark|light|system>"
+      },
+      "terminalSetup": {
+        "description": "端末のキーバインディング（改行/貼り付け動作）を設定します。",
+        "usage": "/terminal-setup"
+      },
+      "agents": {
+        "description": "カスタムAIエージェントとその設定を管理します。",
+        "usage": "/agents"
+      },
+      "memory": {
+        "description": "メモリファイル（CLAUDE.md, USER.md）を開いて編集します。",
+        "usage": "/memory"
+      },
+      "review": {
+        "description": "現在のブランチの変更のコードレビューをリクエストします。",
+        "usage": "/review"
+      },
+      "simplify": {
+        "description": "選択したコードを簡素化してリファクタリングします。",
+        "usage": "/simplify"
+      },
+      "prComments": {
+        "description": "現在の変更のPRレビューコメントを生成します。",
+        "usage": "/pr-comments"
+      },
+      "doctor": {
+        "description": "OpenClawのインストールと設定の問題を診断します。",
+        "usage": "/doctor"
+      },
+      "upgrade": {
+        "description": "OpenClawのアップデートを確認してインストールします。",
+        "usage": "/upgrade"
+      },
+      "releaseNotes": {
+        "description": "現在または最新バージョンのリリースノートを表示します。",
+        "usage": "/release-notes"
+      },
+      "login": {
+        "description": "OpenClawアカウントにログインします。",
+        "usage": "/login"
+      },
+      "logout": {
+        "description": "OpenClawアカウントからログアウトします。",
+        "usage": "/logout"
+      },
+      "stats": {
+        "description": "アカウントの使用統計を表示します。",
+        "usage": "/stats"
+      },
+      "test": {
+        "description": "プロジェクト設定で定義されたテストを実行します。",
+        "usage": "/test"
+      }
     },
-    "status": {
-      "description": "モデル、権限、アクティブな設定を含む現在のセッション状態を表示します。",
-      "usage": "/status"
-    },
-    "context": {
-      "description": "コンテキストウィンドウの使用量、トークン数、残り容量を表示します。",
-      "usage": "/context"
-    },
-    "bashes": {
-      "description": "セッション中に実行されたbashコマンドの履歴を表示します。",
-      "usage": "/bashes"
-    },
-    "todos": {
-      "description": "現在のタスクリストと進捗を表示します。",
-      "usage": "/todos"
-    },
-    "resume": {
-      "description": "最近のセッションから以前の会話を再開します。",
-      "usage": "/resume"
-    },
-    "rename": {
-      "description": "現在の会話をカスタムタイトルに名前変更します。",
-      "usage": "/rename <新しいタイトル>"
-    },
-    "export": {
-      "description": "現在の会話をファイルにエクスポートします。",
-      "usage": "/export"
-    },
-    "config": {
-      "description": "設定パネルを開いて設定を表示・編集します。",
-      "usage": "/config"
-    },
-    "init": {
-      "description": "現在のプロジェクトディレクトリにCLAUDE.mdファイルを初期化します。",
-      "usage": "/init"
-    },
-    "model": {
-      "description": "現在のセッションのアクティブモデルを切り替えます。",
-      "usage": "/model <モデルID>"
-    },
-    "effort": {
-      "description": "推論の努力レベルを設定します（low/medium/high/max）。",
-      "usage": "/effort <レベル>"
-    },
-    "outputStyle": {
-      "description": "セッションの出力形式を設定します（text/json/stream-json）。",
-      "usage": "/output-style <形式>"
-    },
-    "permissions": {
-      "description": "現在のセッションのツール権限設定を管理します。",
-      "usage": "/permissions"
-    },
-    "approvedTools": {
-      "description": "承認されたツールのリストを表示・管理します。",
-      "usage": "/approved-tools"
-    },
-    "addDir": {
-      "description": "現在のセッションのワークスペースにディレクトリを追加します。",
-      "usage": "/add-dir <パス>"
-    },
-    "ide": {
-      "description": "IDE統合設定を構成します。",
-      "usage": "/ide"
-    },
-    "theme": {
-      "description": "ターミナルの表示テーマを変更します（dark/light/system）。",
-      "usage": "/theme <dark|light|system>"
-    },
-    "terminalSetup": {
-      "description": "端末のキーバインディング（改行/貼り付け動作）を設定します。",
-      "usage": "/terminal-setup"
-    },
-    "agents": {
-      "description": "カスタムAIエージェントとその設定を管理します。",
-      "usage": "/agents"
-    },
-    "memory": {
-      "description": "メモリファイル（CLAUDE.md, USER.md）を開いて編集します。",
-      "usage": "/memory"
-    },
-    "review": {
-      "description": "現在のブランチの変更のコードレビューをリクエストします。",
-      "usage": "/review"
-    },
-    "securityReview": {
-      "description": "現在の変更に対してセキュリティレビューを実行します。",
-      "usage": "/security-review"
-    },
-    "simplify": {
-      "description": "選択したコードを簡素化してリファクタリングします。",
-      "usage": "/simplify"
-    },
-    "prComments": {
-      "description": "現在の変更のPRレビューコメントを生成します。",
-      "usage": "/pr-comments"
-    },
-    "doctor": {
-      "description": "Claude Codeのインストールと設定の問題を診断します。",
-      "usage": "/doctor"
-    },
-    "upgrade": {
-      "description": "Claude Codeのアップデートを確認してインストールします。",
-      "usage": "/upgrade"
-    },
-    "releaseNotes": {
-      "description": "現在または最新バージョンのリリースノートを表示します。",
-      "usage": "/release-notes"
-    },
-    "login": {
-      "description": "Anthropicアカウントにログインします。",
-      "usage": "/login"
-    },
-    "logout": {
-      "description": "Anthropicアカウントからログアウトします。",
-      "usage": "/logout"
-    },
-    "stats": {
-      "description": "アカウントの使用統計を表示します。",
-      "usage": "/stats"
-    },
-    "test": {
-      "description": "プロジェクト設定で定義されたテストを実行します。",
-      "usage": "/test"
+    "hermes": {
+      "sessionOnlyHint": "セッション中のみ — Hermesの実行中のみ有効",
+      "help": {
+        "description": "ヘルプを表示し、利用可能なすべてのスラッシュコマンドをリストします。",
+        "usage": "/help または /help <トピック> で特定のトピックの詳細ヘルプを表示。"
+      },
+      "clear": {
+        "description": "会話履歴をクリアして新しく始めます。",
+        "usage": "/clear"
+      },
+      "compact": {
+        "description": "コンテキストウィンドウを圧縮してメモリを解放し、重要な情報を保持します。",
+        "usage": "/compact"
+      },
+      "cost": {
+        "description": "現在のセッションのトークン使用量とコストを表示します。",
+        "usage": "/cost"
+      },
+      "status": {
+        "description": "モデル、権限、アクティブな設定を含む現在のセッション状態を表示します。",
+        "usage": "/status"
+      },
+      "context": {
+        "description": "コンテキストウィンドウの使用量、トークン数、残り容量を表示します。",
+        "usage": "/context"
+      },
+      "bashes": {
+        "description": "セッション中に実行されたbashコマンドの履歴を表示します。",
+        "usage": "/bashes"
+      },
+      "todos": {
+        "description": "現在のタスクリストと進捗を表示します。",
+        "usage": "/todos"
+      },
+      "resume": {
+        "description": "最近のセッションから以前の会話を再開します。",
+        "usage": "/resume"
+      },
+      "rename": {
+        "description": "現在の会話をカスタムタイトルに名前変更します。",
+        "usage": "/rename <新しいタイトル>"
+      },
+      "export": {
+        "description": "現在の会話をファイルにエクスポートします。",
+        "usage": "/export"
+      },
+      "config": {
+        "description": "設定パネルを開いて設定を表示・編集します。",
+        "usage": "/config"
+      },
+      "init": {
+        "description": "現在のプロジェクトディレクトリにAGENTS.mdファイルを初期化します。",
+        "usage": "/init"
+      },
+      "model": {
+        "description": "現在のセッションのアクティブモデルを切り替えます。",
+        "usage": "/model <モデルID>"
+      },
+      "outputStyle": {
+        "description": "セッションの出力形式を設定します（text/json/stream-json）。",
+        "usage": "/output-style <形式>"
+      },
+      "permissions": {
+        "description": "現在のセッションのツール権限設定を管理します。",
+        "usage": "/permissions"
+      },
+      "addDir": {
+        "description": "現在のセッションのワークスペースにディレクトリを追加します。",
+        "usage": "/add-dir <パス>"
+      },
+      "ide": {
+        "description": "IDE統合設定を構成します。",
+        "usage": "/ide"
+      },
+      "theme": {
+        "description": "ターミナルの表示テーマを変更します（dark/light/system）。",
+        "usage": "/theme <dark|light|system>"
+      },
+      "terminalSetup": {
+        "description": "端末のキーバインディング（改行/貼り付け動作）を設定します。",
+        "usage": "/terminal-setup"
+      },
+      "agents": {
+        "description": "カスタムAIエージェントとその設定を管理します。",
+        "usage": "/agents"
+      },
+      "memory": {
+        "description": "メモリファイル（CLAUDE.md, USER.md）を開いて編集します。",
+        "usage": "/memory"
+      },
+      "review": {
+        "description": "現在のブランチの変更のコードレビューをリクエストします。",
+        "usage": "/review"
+      },
+      "simplify": {
+        "description": "選択したコードを簡素化してリファクタリングします。",
+        "usage": "/simplify"
+      },
+      "prComments": {
+        "description": "現在の変更のPRレビューコメントを生成します。",
+        "usage": "/pr-comments"
+      },
+      "doctor": {
+        "description": "Hermesのインストールと設定の問題を診断します。",
+        "usage": "/doctor"
+      },
+      "upgrade": {
+        "description": "Hermesのアップデートを確認してインストールします。",
+        "usage": "/upgrade"
+      },
+      "releaseNotes": {
+        "description": "現在または最新バージョンのリリースノートを表示します。",
+        "usage": "/release-notes"
+      },
+      "login": {
+        "description": "Hermesアカウントにログインします。",
+        "usage": "/login"
+      },
+      "logout": {
+        "description": "Hermesアカウントからログアウトします。",
+        "usage": "/logout"
+      },
+      "test": {
+        "description": "プロジェクト設定で定義されたテストを実行します。",
+        "usage": "/test"
+      }
     }
   }
 }

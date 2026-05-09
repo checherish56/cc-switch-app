@@ -1076,6 +1076,17 @@ pub fn run() {
             commands::is_claude_plugin_applied,
             commands::get_claude_settings_file,
             commands::set_claude_settings_file,
+            // Codex config
+            commands::get_codex_config_text,
+            commands::set_codex_config_text,
+            commands::read_codex_auth_json,
+            commands::set_codex_auth_json,
+            commands::get_codex_config_status,
+            commands::update_codex_toml_section,
+            // OpenCode config
+            commands::read_opencode_config_json,
+            commands::write_opencode_config_json,
+            commands::get_opencode_config_status,
             commands::apply_claude_onboarding_skip,
             commands::clear_claude_onboarding_skip,
             // Claude MCP management

@@ -45,6 +45,11 @@ import { UsageDashboard } from "@/components/usage/UsageDashboard";
 import { LogConfigPanel } from "@/components/settings/LogConfigPanel";
 import { AuthCenterPanel } from "@/components/settings/AuthCenterPanel";
 import { ClaudeConfigPanel } from "@/components/settings/ClaudeConfigPanel";
+import { CodexConfigPanel } from "@/components/settings/CodexConfigPanel";
+import { OpenCodeConfigPanel } from "@/components/settings/OpenCodeConfigPanel";
+import { OpenClawConfigPanel } from "@/components/settings/OpenClawConfigPanel";
+import { HermesConfigPanel } from "@/components/settings/HermesConfigPanel";
+import { CommandsGuidePage } from "@/components/settings/CommandsGuidePage";
 import { useInstalledSkills } from "@/hooks/useSkills";
 import { useSettings } from "@/hooks/useSettings";
 import { useImportExport } from "@/hooks/useImportExport";
@@ -101,6 +106,7 @@ export function SettingsPage({
   const { data: installedSkills } = useInstalledSkills();
 
   const [activeTab, setActiveTab] = useState<string>("general");
+  const [activeConfigAgent, setActiveConfigAgent] = useState<string>("claude");
   const [showRestartPrompt, setShowRestartPrompt] = useState(false);
 
   useEffect(() => {
@@ -195,7 +201,7 @@ export function SettingsPage({
           onValueChange={setActiveTab}
           className="flex flex-col h-full"
         >
-          <TabsList className="grid w-full grid-cols-7 mb-6 glass rounded-lg">
+          <TabsList className="grid w-full grid-cols-8 mb-6 glass rounded-lg">
             <TabsTrigger value="general">
               {t("settings.tabGeneral")}
             </TabsTrigger>
@@ -203,8 +209,11 @@ export function SettingsPage({
             <TabsTrigger value="auth">
               {t("settings.tabAuth", { defaultValue: "认证" })}
             </TabsTrigger>
-            <TabsTrigger value="claudeConfig">
-              {t("settings.tabClaudeConfig", { defaultValue: "Claude Config" })}
+            <TabsTrigger value="configuration">
+              {t("settings.tabConfiguration", { defaultValue: "配置" })}
+            </TabsTrigger>
+            <TabsTrigger value="tutorial">
+              {t("settings.tabTutorial", { defaultValue: "教程" })}
             </TabsTrigger>
             <TabsTrigger value="advanced">
               {t("settings.tabAdvanced")}
@@ -279,14 +288,46 @@ export function SettingsPage({
                 </motion.div>
               </TabsContent>
 
-              <TabsContent value="claudeConfig" className="space-y-6 mt-0 pb-4">
+              <TabsContent value="configuration" className="space-y-6 mt-0 pb-4">
                 <motion.div
                   initial={{ opacity: 0, y: 10 }}
                   animate={{ opacity: 1, y: 0 }}
                   transition={{ duration: 0.3 }}
                   className="space-y-4"
                 >
-                  <ClaudeConfigPanel />
+                  <div className="flex items-center gap-2 mb-4 flex-wrap">
+                    {([
+                      { id: "claude", label: "Claude Code" },
+                      { id: "codex", label: "Codex" },
+                      { id: "opencode", label: "OpenCode" },
+                      { id: "openclaw", label: "OpenClaw" },
+                      { id: "hermes", label: "Hermes" },
+                    ] as const).map((agent) => (
+                      <Button
+                        key={agent.id}
+                        variant={activeConfigAgent === agent.id ? "default" : "outline"}
+                        size="sm"
+                        onClick={() => setActiveConfigAgent(agent.id)}
+                      >
+                        {agent.label}
+                      </Button>
+                    ))}
+                  </div>
+                  {activeConfigAgent === "claude" && <ClaudeConfigPanel />}
+                  {activeConfigAgent === "codex" && <CodexConfigPanel />}
+                  {activeConfigAgent === "opencode" && <OpenCodeConfigPanel />}
+                  {activeConfigAgent === "openclaw" && <OpenClawConfigPanel />}
+                  {activeConfigAgent === "hermes" && <HermesConfigPanel />}
+                </motion.div>
+              </TabsContent>
+
+              <TabsContent value="tutorial" className="space-y-6 mt-0 pb-4">
+                <motion.div
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.3 }}
+                >
+                  <CommandsGuidePage />
                 </motion.div>
               </TabsContent>
 

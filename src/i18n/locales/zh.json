@@ -69,21 +69,97 @@
     "emptyHint": "点击下方「从编辑内容提取」按钮，从当前配置中提取可复用的部分"
   },
   "claudeConfig": {
-    "configLabel": "Claude Code 配置 (JSON) *",
-    "writeCommonConfig": "写入通用配置",
-    "editCommonConfig": "编辑通用配置",
-    "editCommonConfigTitle": "编辑通用配置片段",
-    "commonConfigHint": "该片段会在勾选\"写入通用配置\"时合并到 settings.json 中",
-    "fullSettingsHint": "完整的 Claude Code settings.json 配置内容",
-    "extractFromCurrent": "从编辑内容提取",
-    "extractNoCommonConfig": "当前编辑内容没有可提取的通用配置",
-    "extractFailed": "提取失败: {{error}}",
-    "saveFailed": "保存失败: {{error}}",
-    "hideAttribution": "隐藏 AI 署名",
-    "enableTeammates": "Teammates 模式",
-    "enableToolSearch": "启用 Tool Search",
-    "effortMax": "最大强度思考",
-    "disableAutoUpgrade": "禁用自动升级"
+    "title": "Claude Code 设置",
+    "description": "直接编辑 ~/.claude/settings.json",
+    "fileNotExists": "文件尚未创建，保存后将自动创建。",
+    "saveSuccess": "Claude Code 设置已保存",
+    "saveFailed": "保存 Claude Code 设置失败",
+    "managedKeys": {
+      "title": "以下设置由供应商切换管理：",
+      "topLevel": "顶级键: {{keys}}",
+      "envKeys": "环境变量: {{keys}}"
+    },
+    "permissions": {
+      "title": "权限管理",
+      "description": "控制 Claude Code 工具的权限和审批行为",
+      "defaultMode": "默认模式",
+      "modeDefault": "默认（每次使用工具都需确认）",
+      "modeAcceptEdits": "接受编辑（自动批准编辑操作）",
+      "modeBypass": "绕过权限（跳过所有权限提示）",
+      "modePlan": "计划模式（只读）",
+      "allow": "允许列表",
+      "allowHint": "自动允许的工具。支持模式匹配如 Bash(npm run *), Read(.env*), Edit(/src/**)",
+      "deny": "拒绝列表",
+      "denyHint": "始终拒绝的工具。拒绝规则优先级高于允许规则。",
+      "ask": "询问列表",
+      "askHint": "每次使用都需要用户确认的工具。",
+      "addAllow": "添加允许工具",
+      "addDeny": "添加拒绝工具",
+      "addAsk": "添加询问规则",
+      "additionalDirectories": "额外目录",
+      "additionalDirsHint": "Claude 可以访问的项目根目录之外的目录。",
+      "addDirectory": "添加目录"
+    },
+    "hooks": {
+      "title": "钩子 (Hooks)",
+      "description": "在 Claude Code 事件（如工具执行前后）触发的 Shell 命令",
+      "envHint": "可用环境变量: $CLAUDE_FILE_PATH, $CLAUDE_PROJECT_DIR, $ARGUMENTS",
+      "noHooks": "未配置钩子",
+      "matcher": "匹配器",
+      "timeout": "超时 (毫秒)",
+      "addEvent": "+ 添加钩子事件...",
+      "addMatcher": "添加匹配条目",
+      "addHandler": "添加处理器",
+      "events": {
+        "SessionStart": "会话开始",
+        "UserPromptSubmit": "用户提交提示",
+        "PreToolUse": "工具执行前",
+        "PermissionRequest": "权限请求",
+        "PostToolUse": "工具执行后",
+        "PostToolUseFailure": "工具执行失败后",
+        "Notification": "通知",
+        "SubagentStart": "子代理启动",
+        "SubagentStop": "子代理停止",
+        "Stop": "响应结束",
+        "PreCompact": "压缩前",
+        "SessionEnd": "会话结束",
+        "ConfigChange": "配置变更",
+        "WorktreeCreate": "工作树创建",
+        "WorktreeRemove": "工作树删除"
+      }
+    },
+    "sandbox": {
+      "title": "沙箱",
+      "description": "隔离 Claude Code 的文件系统和网络访问的安全沙箱",
+      "enabled": "启用沙箱",
+      "enabledHint": "在隔离的沙箱环境中运行命令",
+      "autoAllowBash": "沙箱内自动允许 Bash",
+      "autoAllowBashHint": "在沙箱内运行时自动批准 Bash 命令",
+      "denyWrite": "禁止写入路径",
+      "denyWriteHint": "沙箱无法写入的文件路径",
+      "denyRead": "禁止读取路径",
+      "denyReadHint": "沙箱无法读取的文件路径",
+      "addDenyWrite": "添加路径",
+      "addDenyRead": "添加路径"
+    },
+    "env": {
+      "title": "环境变量",
+      "description": "传递给 Claude Code 的环境变量（供应商管理的变量请通过供应商编辑）",
+      "add": "添加变量"
+    },
+    "other": {
+      "title": "其他设置",
+      "description": "其他 Claude Code 设置",
+      "model": "模型",
+      "modelManaged": "由供应商管理",
+      "cleanupPeriodDays": "会话清理（天）",
+      "showTurnDuration": "显示响应耗时",
+      "showTurnDurationHint": "显示每轮对话的响应时间",
+      "spinnerTipsEnabled": "显示加载提示",
+      "spinnerTipsEnabledHint": "在加载动画期间显示提示",
+      "attributionCommit": "Git 归属（Co-Authored-By）",
+      "attributionHint": "留空表示不在提交中添加 Co-Authored-By"
+    }
   },
   "header": {
     "viewOnGithub": "在 GitHub 上查看",
@@ -268,6 +344,8 @@
     "tabGeneral": "通用",
     "tabAuth": "认证",
     "tabClaudeConfig": "Claude 配置",
+    "tabConfiguration": "配置",
+    "tabTutorial": "教程",
     "tabAdvanced": "高级",
     "tabProxy": "路由",
     "authCenter": {
@@ -1066,7 +1144,31 @@
     "modelNamePlaceholder": "例如: gpt-5-codex",
     "contextWindow1M": "1M 上下文窗口",
     "autoCompactLimit": "压缩阈值",
-    "autoCompactLimitHint": "上下文 token 数达到此阈值时自动压缩历史"
+    "autoCompactLimitHint": "上下文 token 数达到此阈值时自动压缩历史",
+    "panel": {
+      "title": "Codex 配置",
+      "fileNotExists": "文件尚未创建，保存后将自动创建。",
+      "saveSuccess": "Codex 配置已保存",
+      "saveFailed": "保存 Codex 配置失败",
+      "authSaved": "auth.json 已保存",
+      "authSaveFailed": "JSON 格式无效",
+      "fieldUpdated": "字段已更新",
+      "updateFailed": "更新失败",
+      "configToml": {
+        "title": "config.toml",
+        "description": "TOML 格式配置文件"
+      },
+      "authJson": {
+        "title": "auth.json",
+        "description": "认证凭据"
+      },
+      "quickSettings": {
+        "title": "快速设置",
+        "description": "常用字段编辑（保留格式的 TOML 编辑）"
+      },
+      "modelName": "模型名称",
+      "baseUrl": "API 地址"
+    }
   },
   "geminiConfig": {
     "envFile": "环境变量 (.env)",
@@ -1123,7 +1225,23 @@
     "modelExtraFieldKeyPlaceholder": "variants",
     "sdkOptions": "SDK 选项",
     "modelOptionKeyPlaceholder": "provider",
-    "modelOptionValuePlaceholder": "{\"order\": [\"baseten\"]}"
+    "modelOptionValuePlaceholder": "{\"order\": [\"baseten\"]}",
+    "panel": {
+      "title": "OpenCode 配置",
+      "fileNotExists": "文件尚未创建，保存后将自动创建。",
+      "saveSuccess": "OpenCode 配置已保存",
+      "saveFailed": "保存 OpenCode 配置失败",
+      "invalidJson": "JSON 格式无效",
+      "mustBeObject": "配置必须是 JSON 对象",
+      "configFile": {
+        "title": "opencode.json",
+        "description": "JSON 格式配置文件"
+      },
+      "providersList": {
+        "title": "已配置的供应商",
+        "description": "此配置中的供应商（只读）"
+      }
+    }
   },
   "providerPreset": {
     "label": "预设供应商",
@@ -1768,6 +1886,12 @@
       "loadFailed": "读取记忆文件失败",
       "openConfig": "在 Hermes Web UI 调整上限",
       "runtimeNote": "更改将在 Hermes 下次启动或新建会话时生效。"
+    },
+    "configPanel": {
+      "modelInfo": "模型配置",
+      "modelInfoHint": "模型通过供应商切换和 Hermes Web UI 管理。",
+      "openWebUi": "打开 Hermes Web UI",
+      "memoryDescription": "管理 agent 和 user 记忆文件"
     }
   },
   "env": {
@@ -2605,99 +2729,6 @@
     "queryFailed": "查询失败",
     "refresh": "刷新"
   },
-  "claudeConfig": {
-    "title": "Claude Code 设置",
-    "description": "直接编辑 ~/.claude/settings.json",
-    "fileNotExists": "文件尚未创建，保存后将自动创建。",
-    "saveSuccess": "Claude Code 设置已保存",
-    "saveFailed": "保存 Claude Code 设置失败",
-    "managedKeys": {
-      "title": "以下设置由供应商切换管理：",
-      "topLevel": "顶级键: {{keys}}",
-      "envKeys": "环境变量: {{keys}}"
-    },
-    "permissions": {
-      "title": "权限管理",
-      "description": "控制 Claude Code 工具的权限和审批行为",
-      "defaultMode": "默认模式",
-      "modeDefault": "默认（每次使用工具都需确认）",
-      "modeAcceptEdits": "接受编辑（自动批准编辑操作）",
-      "modeBypass": "绕过权限（跳过所有权限提示）",
-      "modePlan": "计划模式（只读）",
-      "allow": "允许列表",
-      "allowHint": "自动允许的工具。支持模式匹配如 Bash(npm run *), Read(.env*), Edit(/src/**)",
-      "deny": "拒绝列表",
-      "denyHint": "始终拒绝的工具。拒绝规则优先级高于允许规则。",
-      "ask": "询问列表",
-      "askHint": "每次使用都需要用户确认的工具。",
-      "addAllow": "添加允许工具",
-      "addDeny": "添加拒绝工具",
-      "addAsk": "添加询问规则",
-      "additionalDirectories": "额外目录",
-      "additionalDirsHint": "Claude 可以访问的项目根目录之外的目录。",
-      "addDirectory": "添加目录"
-    },
-    "hooks": {
-      "title": "钩子 (Hooks)",
-      "description": "在 Claude Code 事件（如工具执行前后）触发的 Shell 命令",
-      "envHint": "可用环境变量: $CLAUDE_FILE_PATH, $CLAUDE_PROJECT_DIR, $ARGUMENTS",
-      "noHooks": "未配置钩子",
-      "matcher": "匹配器",
-      "timeout": "超时 (毫秒)",
-      "addEvent": "+ 添加钩子事件...",
-      "addMatcher": "添加匹配条目",
-      "addHandler": "添加处理器",
-      "events": {
-        "SessionStart": "会话开始",
-        "UserPromptSubmit": "用户提交提示",
-        "PreToolUse": "工具执行前",
-        "PermissionRequest": "权限请求",
-        "PostToolUse": "工具执行后",
-        "PostToolUseFailure": "工具执行失败后",
-        "Notification": "通知",
-        "SubagentStart": "子代理启动",
-        "SubagentStop": "子代理停止",
-        "Stop": "响应结束",
-        "PreCompact": "压缩前",
-        "SessionEnd": "会话结束",
-        "ConfigChange": "配置变更",
-        "WorktreeCreate": "工作树创建",
-        "WorktreeRemove": "工作树删除"
-      }
-    },
-    "sandbox": {
-      "title": "沙箱",
-      "description": "隔离 Claude Code 的文件系统和网络访问的安全沙箱",
-      "enabled": "启用沙箱",
-      "enabledHint": "在隔离的沙箱环境中运行命令",
-      "autoAllowBash": "沙箱内自动允许 Bash",
-      "autoAllowBashHint": "在沙箱内运行时自动批准 Bash 命令",
-      "denyWrite": "禁止写入路径",
-      "denyWriteHint": "沙箱无法写入的文件路径",
-      "denyRead": "禁止读取路径",
-      "denyReadHint": "沙箱无法读取的文件路径",
-      "addDenyWrite": "添加路径",
-      "addDenyRead": "添加路径"
-    },
-    "env": {
-      "title": "环境变量",
-      "description": "传递给 Claude Code 的环境变量（供应商管理的变量请通过供应商编辑）",
-      "add": "添加变量"
-    },
-    "other": {
-      "title": "其他设置",
-      "description": "其他 Claude Code 设置",
-      "model": "模型",
-      "modelManaged": "由供应商管理",
-      "cleanupPeriodDays": "会话清理（天）",
-      "showTurnDuration": "显示响应耗时",
-      "showTurnDurationHint": "显示每轮对话的响应时间",
-      "spinnerTipsEnabled": "显示加载提示",
-      "spinnerTipsEnabledHint": "在加载动画期间显示提示",
-      "attributionCommit": "Git 归属（Co-Authored-By）",
-      "attributionHint": "留空表示不在提交中添加 Co-Authored-By"
-    }
-  },
   "claudeLaunch": {
     "title": "Claude Code 启动配置",
     "description": "配置 CLI 参数，这些参数将在启动时传递给 Claude Code。",
@@ -2733,14 +2764,14 @@
     "launch": "启动"
   },
   "commands": {
-    "title": "Claude Code 斜杠命令",
-    "description": "Claude Code /命令参考指南。点击复制以在终端会话中使用。",
+    "title": "AI 编码工具斜杠命令教程",
+    "description": "AI 编码工具斜杠命令（/命令）参考指南。点击复制以在终端会话中使用。",
+    "multiAgentDescription": "所有 AI 编码工具（Claude Code、Codex、OpenCode、OpenClaw、Hermes）的斜杠命令参考指南。点击命令即可复制，在终端会话中使用。",
     "searchPlaceholder": "搜索命令...",
     "copyCommand": "复制",
     "openTerminal": "打开终端",
     "copied": "已复制: {{cmd}}",
     "cliHint": "CLI 标志: {{flag}} — 可在启动配置中预设",
-    "sessionOnlyHint": "仅会话中可用 — 仅在 Claude Code 运行时有效",
     "categories": {
       "session": "会话管理",
       "config": "配置设置",
@@ -2749,145 +2780,652 @@
       "account": "账户",
       "dev": "开发"
     },
-    "help": {
-      "description": "显示帮助并列出所有可用的斜杠命令。",
-      "usage": "/help 或 /help <主题> 查看特定主题的详细帮助。"
+    "claude": {
+      "sessionOnlyHint": "仅会话中可用 — 仅在 Claude Code 运行时有效",
+      "help": {
+        "description": "显示帮助并列出所有可用的斜杠命令。",
+        "usage": "/help 或 /help <主题> 查看特定主题的详细帮助。"
+      },
+      "clear": {
+        "description": "清除对话历史，重新开始。",
+        "usage": "/clear"
+      },
+      "compact": {
+        "description": "压缩上下文窗口以释放内存，同时保留关键信息。",
+        "usage": "/compact"
+      },
+      "cost": {
+        "description": "显示当前会话的令牌用量和费用。",
+        "usage": "/cost"
+      },
+      "status": {
+        "description": "显示当前会话状态，包括模型、权限和活跃设置。",
+        "usage": "/status"
+      },
+      "context": {
+        "description": "显示上下文窗口使用情况、令牌数和剩余容量。",
+        "usage": "/context"
+      },
+      "bashes": {
+        "description": "查看会话期间执行过的 bash 命令历史。",
+        "usage": "/bashes"
+      },
+      "todos": {
+        "description": "查看当前任务列表和进度。",
+        "usage": "/todos"
+      },
+      "resume": {
+        "description": "从最近的会话中恢复之前的对话。",
+        "usage": "/resume"
+      },
+      "rename": {
+        "description": "将当前对话重命名为自定义标题。",
+        "usage": "/rename <新标题>"
+      },
+      "export": {
+        "description": "将当前对话导出到文件。",
+        "usage": "/export"
+      },
+      "config": {
+        "description": "打开配置面板查看和编辑设置。",
+        "usage": "/config"
+      },
+      "init": {
+        "description": "在当前项目目录中初始化 CLAUDE.md 文件。",
+        "usage": "/init"
+      },
+      "model": {
+        "description": "切换当前会话使用的模型。",
+        "usage": "/model <模型ID>"
+      },
+      "effort": {
+        "description": "设置推理努力水平（low/medium/high/max）。",
+        "usage": "/effort <级别>"
+      },
+      "outputStyle": {
+        "description": "设置会话输出格式（text/json/stream-json）。",
+        "usage": "/output-style <格式>"
+      },
+      "permissions": {
+        "description": "管理当前会话的工具权限设置。",
+        "usage": "/permissions"
+      },
+      "approvedTools": {
+        "description": "查看和管理已批准的工具列表。",
+        "usage": "/approved-tools"
+      },
+      "addDir": {
+        "description": "为当前会话添加工作目录。",
+        "usage": "/add-dir <路径>"
+      },
+      "ide": {
+        "description": "配置 IDE 集成设置。",
+        "usage": "/ide"
+      },
+      "theme": {
+        "description": "更改终端显示主题（dark/light/system）。",
+        "usage": "/theme <dark|light|system>"
+      },
+      "terminalSetup": {
+        "description": "设置终端快捷键（换行/粘贴行为）。",
+        "usage": "/terminal-setup"
+      },
+      "agents": {
+        "description": "管理自定义 AI 代理及其配置。",
+        "usage": "/agents"
+      },
+      "memory": {
+        "description": "打开并编辑记忆文件（CLAUDE.md, USER.md）。",
+        "usage": "/memory"
+      },
+      "review": {
+        "description": "请求对当前分支的代码变更进行审查。",
+        "usage": "/review"
+      },
+      "securityReview": {
+        "description": "对当前变更运行安全审查。",
+        "usage": "/security-review"
+      },
+      "simplify": {
+        "description": "简化并重构选中的代码。",
+        "usage": "/simplify"
+      },
+      "prComments": {
+        "description": "为当前变更生成 PR 评论。",
+        "usage": "/pr-comments"
+      },
+      "doctor": {
+        "description": "诊断 Claude Code 安装和配置问题。",
+        "usage": "/doctor"
+      },
+      "upgrade": {
+        "description": "检查并安装 Claude Code 更新。",
+        "usage": "/upgrade"
+      },
+      "releaseNotes": {
+        "description": "查看当前或最新版本的发布说明。",
+        "usage": "/release-notes"
+      },
+      "login": {
+        "description": "登录 Anthropic 账户。",
+        "usage": "/login"
+      },
+      "logout": {
+        "description": "登出 Anthropic 账户。",
+        "usage": "/logout"
+      },
+      "stats": {
+        "description": "查看账户使用统计。",
+        "usage": "/stats"
+      },
+      "test": {
+        "description": "运行项目配置中定义的测试。",
+        "usage": "/test"
+      }
     },
-    "clear": {
-      "description": "清除对话历史，重新开始。",
-      "usage": "/clear"
+    "codex": {
+      "sessionOnlyHint": "仅会话中可用 — 仅在 Codex 运行时有效",
+      "help": {
+        "description": "显示帮助并列出所有可用的斜杠命令。",
+        "usage": "/help 或 /help <主题> 查看特定主题的详细帮助。"
+      },
+      "clear": {
+        "description": "清除对话历史，重新开始。",
+        "usage": "/clear"
+      },
+      "compact": {
+        "description": "压缩上下文窗口以释放内存，同时保留关键信息。",
+        "usage": "/compact"
+      },
+      "cost": {
+        "description": "显示当前会话的令牌用量和费用。",
+        "usage": "/cost"
+      },
+      "status": {
+        "description": "显示当前会话状态，包括模型、权限和活跃设置。",
+        "usage": "/status"
+      },
+      "context": {
+        "description": "显示上下文窗口使用情况、令牌数和剩余容量。",
+        "usage": "/context"
+      },
+      "bashes": {
+        "description": "查看会话期间执行过的 bash 命令历史。",
+        "usage": "/bashes"
+      },
+      "todos": {
+        "description": "查看当前任务列表和进度。",
+        "usage": "/todos"
+      },
+      "resume": {
+        "description": "从最近的会话中恢复之前的对话。",
+        "usage": "/resume"
+      },
+      "rename": {
+        "description": "将当前对话重命名为自定义标题。",
+        "usage": "/rename <新标题>"
+      },
+      "export": {
+        "description": "将当前对话导出到文件。",
+        "usage": "/export"
+      },
+      "config": {
+        "description": "打开配置面板查看和编辑设置。",
+        "usage": "/config"
+      },
+      "init": {
+        "description": "在当前项目目录中初始化 CODEX.md 文件。",
+        "usage": "/init"
+      },
+      "model": {
+        "description": "切换当前会话使用的模型。",
+        "usage": "/model <模型ID>"
+      },
+      "permissions": {
+        "description": "管理当前会话的工具权限设置。",
+        "usage": "/permissions"
+      },
+      "addDir": {
+        "description": "为当前会话添加工作目录。",
+        "usage": "/add-dir <路径>"
+      },
+      "ide": {
+        "description": "配置 IDE 集成设置。",
+        "usage": "/ide"
+      },
+      "theme": {
+        "description": "更改终端显示主题（dark/light/system）。",
+        "usage": "/theme <dark|light|system>"
+      },
+      "terminalSetup": {
+        "description": "设置终端快捷键（换行/粘贴行为）。",
+        "usage": "/terminal-setup"
+      },
+      "agents": {
+        "description": "管理自定义 AI 代理及其配置。",
+        "usage": "/agents"
+      },
+      "memory": {
+        "description": "打开并编辑记忆文件（CODEX.md, USER.md）。",
+        "usage": "/memory"
+      },
+      "review": {
+        "description": "请求对当前分支的代码变更进行审查。",
+        "usage": "/review"
+      },
+      "securityReview": {
+        "description": "对当前变更运行安全审查。",
+        "usage": "/security-review"
+      },
+      "simplify": {
+        "description": "简化并重构选中的代码。",
+        "usage": "/simplify"
+      },
+      "prComments": {
+        "description": "为当前变更生成 PR 评论。",
+        "usage": "/pr-comments"
+      },
+      "doctor": {
+        "description": "诊断 Codex 安装和配置问题。",
+        "usage": "/doctor"
+      },
+      "upgrade": {
+        "description": "检查并安装 Codex 更新。",
+        "usage": "/upgrade"
+      },
+      "releaseNotes": {
+        "description": "查看当前或最新版本的发布说明。",
+        "usage": "/release-notes"
+      },
+      "login": {
+        "description": "登录 OpenAI 账户。",
+        "usage": "/login"
+      },
+      "logout": {
+        "description": "登出 OpenAI 账户。",
+        "usage": "/logout"
+      },
+      "stats": {
+        "description": "查看账户使用统计。",
+        "usage": "/stats"
+      },
+      "test": {
+        "description": "运行项目配置中定义的测试。",
+        "usage": "/test"
+      }
     },
-    "compact": {
-      "description": "压缩上下文窗口以释放内存，同时保留关键信息。",
-      "usage": "/compact"
+    "opencode": {
+      "sessionOnlyHint": "仅会话中可用 — 仅在 OpenCode 运行时有效",
+      "help": {
+        "description": "显示帮助并列出所有可用的斜杠命令。",
+        "usage": "/help 或 /help <主题> 查看特定主题的详细帮助。"
+      },
+      "clear": {
+        "description": "清除对话历史，重新开始。",
+        "usage": "/clear"
+      },
+      "compact": {
+        "description": "压缩上下文窗口以释放内存，同时保留关键信息。",
+        "usage": "/compact"
+      },
+      "cost": {
+        "description": "显示当前会话的令牌用量和费用。",
+        "usage": "/cost"
+      },
+      "status": {
+        "description": "显示当前会话状态，包括模型、权限和活跃设置。",
+        "usage": "/status"
+      },
+      "context": {
+        "description": "显示上下文窗口使用情况、令牌数和剩余容量。",
+        "usage": "/context"
+      },
+      "bashes": {
+        "description": "查看会话期间执行过的 bash 命令历史。",
+        "usage": "/bashes"
+      },
+      "todos": {
+        "description": "查看当前任务列表和进度。",
+        "usage": "/todos"
+      },
+      "resume": {
+        "description": "从最近的会话中恢复之前的对话。",
+        "usage": "/resume"
+      },
+      "rename": {
+        "description": "将当前对话重命名为自定义标题。",
+        "usage": "/rename <新标题>"
+      },
+      "export": {
+        "description": "将当前对话导出到文件。",
+        "usage": "/export"
+      },
+      "config": {
+        "description": "打开配置面板查看和编辑设置。",
+        "usage": "/config"
+      },
+      "init": {
+        "description": "在当前项目目录中初始化 AGENTS.md 文件。",
+        "usage": "/init"
+      },
+      "model": {
+        "description": "切换当前会话使用的模型。",
+        "usage": "/model <模型ID>"
+      },
+      "permissions": {
+        "description": "管理当前会话的工具权限设置。",
+        "usage": "/permissions"
+      },
+      "addDir": {
+        "description": "为当前会话添加工作目录。",
+        "usage": "/add-dir <路径>"
+      },
+      "ide": {
+        "description": "配置 IDE 集成设置。",
+        "usage": "/ide"
+      },
+      "theme": {
+        "description": "更改终端显示主题（dark/light/system）。",
+        "usage": "/theme <dark|light|system>"
+      },
+      "agents": {
+        "description": "管理自定义 AI 代理及其配置。",
+        "usage": "/agents"
+      },
+      "memory": {
+        "description": "打开并编辑记忆文件（CLAUDE.md, USER.md）。",
+        "usage": "/memory"
+      },
+      "review": {
+        "description": "请求对当前分支的代码变更进行审查。",
+        "usage": "/review"
+      },
+      "simplify": {
+        "description": "简化并重构选中的代码。",
+        "usage": "/simplify"
+      },
+      "prComments": {
+        "description": "为当前变更生成 PR 评论。",
+        "usage": "/pr-comments"
+      },
+      "doctor": {
+        "description": "诊断 OpenCode 安装和配置问题。",
+        "usage": "/doctor"
+      },
+      "upgrade": {
+        "description": "检查并安装 OpenCode 更新。",
+        "usage": "/upgrade"
+      },
+      "releaseNotes": {
+        "description": "查看当前或最新版本的发布说明。",
+        "usage": "/release-notes"
+      },
+      "login": {
+        "description": "登录 OpenCode 账户。",
+        "usage": "/login"
+      },
+      "logout": {
+        "description": "登出 OpenCode 账户。",
+        "usage": "/logout"
+      },
+      "test": {
+        "description": "运行项目配置中定义的测试。",
+        "usage": "/test"
+      }
     },
-    "cost": {
-      "description": "显示当前会话的令牌用量和费用。",
-      "usage": "/cost"
+    "openclaw": {
+      "sessionOnlyHint": "仅会话中可用 — 仅在 OpenClaw 运行时有效",
+      "help": {
+        "description": "显示帮助并列出所有可用的斜杠命令。",
+        "usage": "/help 或 /help <主题> 查看特定主题的详细帮助。"
+      },
+      "clear": {
+        "description": "清除对话历史，重新开始。",
+        "usage": "/clear"
+      },
+      "compact": {
+        "description": "压缩上下文窗口以释放内存，同时保留关键信息。",
+        "usage": "/compact"
+      },
+      "cost": {
+        "description": "显示当前会话的令牌用量和费用。",
+        "usage": "/cost"
+      },
+      "status": {
+        "description": "显示当前会话状态，包括模型、权限和活跃设置。",
+        "usage": "/status"
+      },
+      "context": {
+        "description": "显示上下文窗口使用情况、令牌数和剩余容量。",
+        "usage": "/context"
+      },
+      "bashes": {
+        "description": "查看会话期间执行过的 bash 命令历史。",
+        "usage": "/bashes"
+      },
+      "todos": {
+        "description": "查看当前任务列表和进度。",
+        "usage": "/todos"
+      },
+      "resume": {
+        "description": "从最近的会话中恢复之前的对话。",
+        "usage": "/resume"
+      },
+      "rename": {
+        "description": "将当前对话重命名为自定义标题。",
+        "usage": "/rename <新标题>"
+      },
+      "export": {
+        "description": "将当前对话导出到文件。",
+        "usage": "/export"
+      },
+      "config": {
+        "description": "打开配置面板查看和编辑设置。",
+        "usage": "/config"
+      },
+      "init": {
+        "description": "在当前项目目录中初始化 AGENTS.md 文件。",
+        "usage": "/init"
+      },
+      "model": {
+        "description": "切换当前会话使用的模型。",
+        "usage": "/model <模型ID>"
+      },
+      "permissions": {
+        "description": "管理当前会话的工具权限设置。",
+        "usage": "/permissions"
+      },
+      "addDir": {
+        "description": "为当前会话添加工作目录。",
+        "usage": "/add-dir <路径>"
+      },
+      "ide": {
+        "description": "配置 IDE 集成设置。",
+        "usage": "/ide"
+      },
+      "theme": {
+        "description": "更改终端显示主题（dark/light/system）。",
+        "usage": "/theme <dark|light|system>"
+      },
+      "terminalSetup": {
+        "description": "设置终端快捷键（换行/粘贴行为）。",
+        "usage": "/terminal-setup"
+      },
+      "agents": {
+        "description": "管理自定义 AI 代理及其配置。",
+        "usage": "/agents"
+      },
+      "memory": {
+        "description": "打开并编辑记忆文件（CLAUDE.md, USER.md）。",
+        "usage": "/memory"
+      },
+      "review": {
+        "description": "请求对当前分支的代码变更进行审查。",
+        "usage": "/review"
+      },
+      "simplify": {
+        "description": "简化并重构选中的代码。",
+        "usage": "/simplify"
+      },
+      "prComments": {
+        "description": "为当前变更生成 PR 评论。",
+        "usage": "/pr-comments"
+      },
+      "doctor": {
+        "description": "诊断 OpenClaw 安装和配置问题。",
+        "usage": "/doctor"
+      },
+      "upgrade": {
+        "description": "检查并安装 OpenClaw 更新。",
+        "usage": "/upgrade"
+      },
+      "releaseNotes": {
+        "description": "查看当前或最新版本的发布说明。",
+        "usage": "/release-notes"
+      },
+      "login": {
+        "description": "登录 OpenClaw 账户。",
+        "usage": "/login"
+      },
+      "logout": {
+        "description": "登出 OpenClaw 账户。",
+        "usage": "/logout"
+      },
+      "stats": {
+        "description": "查看账户使用统计。",
+        "usage": "/stats"
+      },
+      "test": {
+        "description": "运行项目配置中定义的测试。",
+        "usage": "/test"
+      }
     },
-    "status": {
-      "description": "显示当前会话状态，包括模型、权限和活跃设置。",
-      "usage": "/status"
-    },
-    "context": {
-      "description": "显示上下文窗口使用情况、令牌数和剩余容量。",
-      "usage": "/context"
-    },
-    "bashes": {
-      "description": "查看会话期间执行过的 bash 命令历史。",
-      "usage": "/bashes"
-    },
-    "todos": {
-      "description": "查看当前任务列表和进度。",
-      "usage": "/todos"
-    },
-    "resume": {
-      "description": "从最近的会话中恢复之前的对话。",
-      "usage": "/resume"
-    },
-    "rename": {
-      "description": "将当前对话重命名为自定义标题。",
-      "usage": "/rename <新标题>"
-    },
-    "export": {
-      "description": "将当前对话导出到文件。",
-      "usage": "/export"
-    },
-    "config": {
-      "description": "打开配置面板查看和编辑设置。",
-      "usage": "/config"
-    },
-    "init": {
-      "description": "在当前项目目录中初始化 CLAUDE.md 文件。",
-      "usage": "/init"
-    },
-    "model": {
-      "description": "切换当前会话使用的模型。",
-      "usage": "/model <模型ID>"
-    },
-    "effort": {
-      "description": "设置推理努力水平（low/medium/high/max）。",
-      "usage": "/effort <级别>"
-    },
-    "outputStyle": {
-      "description": "设置会话输出格式（text/json/stream-json）。",
-      "usage": "/output-style <格式>"
-    },
-    "permissions": {
-      "description": "管理当前会话的工具权限设置。",
-      "usage": "/permissions"
-    },
-    "approvedTools": {
-      "description": "查看和管理已批准的工具列表。",
-      "usage": "/approved-tools"
-    },
-    "addDir": {
-      "description": "为当前会话添加工作目录。",
-      "usage": "/add-dir <路径>"
-    },
-    "ide": {
-      "description": "配置 IDE 集成设置。",
-      "usage": "/ide"
-    },
-    "theme": {
-      "description": "更改终端显示主题（dark/light/system）。",
-      "usage": "/theme <dark|light|system>"
-    },
-    "terminalSetup": {
-      "description": "设置终端快捷键（换行/粘贴行为）。",
-      "usage": "/terminal-setup"
-    },
-    "agents": {
-      "description": "管理自定义 AI 代理及其配置。",
-      "usage": "/agents"
-    },
-    "memory": {
-      "description": "打开并编辑记忆文件（CLAUDE.md, USER.md）。",
-      "usage": "/memory"
-    },
-    "review": {
-      "description": "请求对当前分支的代码变更进行审查。",
-      "usage": "/review"
-    },
-    "securityReview": {
-      "description": "对当前变更运行安全审查。",
-      "usage": "/security-review"
-    },
-    "simplify": {
-      "description": "简化并重构选中的代码。",
-      "usage": "/simplify"
-    },
-    "prComments": {
-      "description": "为当前变更生成 PR 评论。",
-      "usage": "/pr-comments"
-    },
-    "doctor": {
-      "description": "诊断 Claude Code 安装和配置问题。",
-      "usage": "/doctor"
-    },
-    "upgrade": {
-      "description": "检查并安装 Claude Code 更新。",
-      "usage": "/upgrade"
-    },
-    "releaseNotes": {
-      "description": "查看当前或最新版本的发布说明。",
-      "usage": "/release-notes"
-    },
-    "login": {
-      "description": "登录 Anthropic 账户。",
-      "usage": "/login"
-    },
-    "logout": {
-      "description": "登出 Anthropic 账户。",
-      "usage": "/logout"
-    },
-    "stats": {
-      "description": "查看账户使用统计。",
-      "usage": "/stats"
-    },
-    "test": {
-      "description": "运行项目配置中定义的测试。",
-      "usage": "/test"
+    "hermes": {
+      "sessionOnlyHint": "仅会话中可用 — 仅在 Hermes 运行时有效",
+      "help": {
+        "description": "显示帮助并列出所有可用的斜杠命令。",
+        "usage": "/help 或 /help <主题> 查看特定主题的详细帮助。"
+      },
+      "clear": {
+        "description": "清除对话历史，重新开始。",
+        "usage": "/clear"
+      },
+      "compact": {
+        "description": "压缩上下文窗口以释放内存，同时保留关键信息。",
+        "usage": "/compact"
+      },
+      "cost": {
+        "description": "显示当前会话的令牌用量和费用。",
+        "usage": "/cost"
+      },
+      "status": {
+        "description": "显示当前会话状态，包括模型、权限和活跃设置。",
+        "usage": "/status"
+      },
+      "context": {
+        "description": "显示上下文窗口使用情况、令牌数和剩余容量。",
+        "usage": "/context"
+      },
+      "bashes": {
+        "description": "查看会话期间执行过的 bash 命令历史。",
+        "usage": "/bashes"
+      },
+      "todos": {
+        "description": "查看当前任务列表和进度。",
+        "usage": "/todos"
+      },
+      "resume": {
+        "description": "从最近的会话中恢复之前的对话。",
+        "usage": "/resume"
+      },
+      "rename": {
+        "description": "将当前对话重命名为自定义标题。",
+        "usage": "/rename <新标题>"
+      },
+      "export": {
+        "description": "将当前对话导出到文件。",
+        "usage": "/export"
+      },
+      "config": {
+        "description": "打开配置面板查看和编辑设置。",
+        "usage": "/config"
+      },
+      "init": {
+        "description": "在当前项目目录中初始化 AGENTS.md 文件。",
+        "usage": "/init"
+      },
+      "model": {
+        "description": "切换当前会话使用的模型。",
+        "usage": "/model <模型ID>"
+      },
+      "outputStyle": {
+        "description": "设置会话输出格式（text/json/stream-json）。",
+        "usage": "/output-style <格式>"
+      },
+      "permissions": {
+        "description": "管理当前会话的工具权限设置。",
+        "usage": "/permissions"
+      },
+      "addDir": {
+        "description": "为当前会话添加工作目录。",
+        "usage": "/add-dir <路径>"
+      },
+      "ide": {
+        "description": "配置 IDE 集成设置。",
+        "usage": "/ide"
+      },
+      "theme": {
+        "description": "更改终端显示主题（dark/light/system）。",
+        "usage": "/theme <dark|light|system>"
+      },
+      "terminalSetup": {
+        "description": "设置终端快捷键（换行/粘贴行为）。",
+        "usage": "/terminal-setup"
+      },
+      "agents": {
+        "description": "管理自定义 AI 代理及其配置。",
+        "usage": "/agents"
+      },
+      "memory": {
+        "description": "打开并编辑记忆文件（CLAUDE.md, USER.md）。",
+        "usage": "/memory"
+      },
+      "review": {
+        "description": "请求对当前分支的代码变更进行审查。",
+        "usage": "/review"
+      },
+      "simplify": {
+        "description": "简化并重构选中的代码。",
+        "usage": "/simplify"
+      },
+      "prComments": {
+        "description": "为当前变更生成 PR 评论。",
+        "usage": "/pr-comments"
+      },
+      "doctor": {
+        "description": "诊断 Hermes 安装和配置问题。",
+        "usage": "/doctor"
+      },
+      "upgrade": {
+        "description": "检查并安装 Hermes 更新。",
+        "usage": "/upgrade"
+      },
+      "releaseNotes": {
+        "description": "查看当前或最新版本的发布说明。",
+        "usage": "/release-notes"
+      },
+      "login": {
+        "description": "登录 Hermes 账户。",
+        "usage": "/login"
+      },
+      "logout": {
+        "description": "登出 Hermes 账户。",
+        "usage": "/logout"
+      },
+      "test": {
+        "description": "运行项目配置中定义的测试。",
+        "usage": "/test"
+      }
     }
   }
 }

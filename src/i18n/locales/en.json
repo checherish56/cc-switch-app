@@ -69,21 +69,97 @@
     "emptyHint": "Click \"Extract from Editor\" below to extract reusable parts from your current configuration"
   },
   "claudeConfig": {
-    "configLabel": "Claude Code settings.json (JSON) *",
-    "writeCommonConfig": "Write Common Config",
-    "editCommonConfig": "Edit Common Config",
-    "editCommonConfigTitle": "Edit Common Config Snippet",
-    "commonConfigHint": "This snippet will be merged into settings.json when 'Write Common Config' is checked",
-    "fullSettingsHint": "Full Claude Code settings.json content",
-    "extractFromCurrent": "Extract from Editor",
-    "extractNoCommonConfig": "No common config available to extract from editor",
-    "extractFailed": "Extract failed: {{error}}",
-    "saveFailed": "Save failed: {{error}}",
-    "hideAttribution": "Hide AI Attribution",
-    "enableTeammates": "Teammates Mode",
-    "enableToolSearch": "Enable Tool Search",
-    "effortMax": "Max Effort Thinking",
-    "disableAutoUpgrade": "Disable Auto-Upgrade"
+    "title": "Claude Code Settings",
+    "description": "Edit ~/.claude/settings.json directly",
+    "fileNotExists": "File does not exist. It will be created on save.",
+    "saveSuccess": "Claude Code settings saved successfully",
+    "saveFailed": "Failed to save Claude Code settings",
+    "managedKeys": {
+      "title": "Some settings are managed by provider switching:",
+      "topLevel": "Top-level: {{keys}}",
+      "envKeys": "Env vars: {{keys}}"
+    },
+    "permissions": {
+      "title": "Permissions",
+      "description": "Control which tools Claude can use and when to ask for approval",
+      "defaultMode": "Default Mode",
+      "modeDefault": "Default (prompt for each tool)",
+      "modeAcceptEdits": "Accept Edits (auto-approve edits)",
+      "modeBypass": "Bypass (skip all permission prompts)",
+      "modePlan": "Plan Mode (read-only)",
+      "allow": "Allow",
+      "allowHint": "Tools to auto-allow. Use patterns like Bash(npm run *), Read(.env*), Edit(/src/**)",
+      "deny": "Deny",
+      "denyHint": "Tools to always deny. Deny rules take priority over Allow.",
+      "ask": "Ask",
+      "askHint": "Tools that require explicit user confirmation each time.",
+      "addAllow": "Add Allowed Tool",
+      "addDeny": "Add Denied Tool",
+      "addAsk": "Add Ask Rule",
+      "additionalDirectories": "Additional Directories",
+      "additionalDirsHint": "Directories Claude can access beyond the project root.",
+      "addDirectory": "Add Directory"
+    },
+    "hooks": {
+      "title": "Hooks",
+      "description": "Shell commands triggered on Claude Code events like PreToolUse, PostToolUse, etc.",
+      "envHint": "Available env vars: $CLAUDE_FILE_PATH, $CLAUDE_PROJECT_DIR, $ARGUMENTS",
+      "noHooks": "No hooks configured",
+      "matcher": "Matcher",
+      "timeout": "timeout (ms)",
+      "addEvent": "+ Add Hook Event...",
+      "addMatcher": "Add Matcher Entry",
+      "addHandler": "Add Handler",
+      "events": {
+        "SessionStart": "Session Start",
+        "UserPromptSubmit": "User Prompt Submit",
+        "PreToolUse": "Before Tool Use",
+        "PermissionRequest": "Permission Request",
+        "PostToolUse": "After Tool Use",
+        "PostToolUseFailure": "After Tool Failure",
+        "Notification": "Notification",
+        "SubagentStart": "Subagent Start",
+        "SubagentStop": "Subagent Stop",
+        "Stop": "On Stop",
+        "PreCompact": "Before Compaction",
+        "SessionEnd": "Session End",
+        "ConfigChange": "Config Change",
+        "WorktreeCreate": "Worktree Create",
+        "WorktreeRemove": "Worktree Remove"
+      }
+    },
+    "sandbox": {
+      "title": "Sandbox",
+      "description": "Security sandbox to isolate Claude Code's file system and network access",
+      "enabled": "Enable Sandbox",
+      "enabledHint": "Run commands in an isolated sandbox environment",
+      "autoAllowBash": "Auto-Allow Bash When Sandboxed",
+      "autoAllowBashHint": "Automatically approve Bash commands when running inside the sandbox",
+      "denyWrite": "Deny Write Paths",
+      "denyWriteHint": "File paths the sandbox cannot write to",
+      "denyRead": "Deny Read Paths",
+      "denyReadHint": "File paths the sandbox cannot read",
+      "addDenyWrite": "Add Path",
+      "addDenyRead": "Add Path"
+    },
+    "env": {
+      "title": "Environment Variables",
+      "description": "Environment variables passed to Claude Code (provider-managed variables are edited via providers)",
+      "add": "Add Variable"
+    },
+    "other": {
+      "title": "Other Settings",
+      "description": "Miscellaneous Claude Code settings",
+      "model": "Model",
+      "modelManaged": "Managed by provider",
+      "cleanupPeriodDays": "Session Cleanup (days)",
+      "showTurnDuration": "Show Turn Duration",
+      "showTurnDurationHint": "Display response time for each turn",
+      "spinnerTipsEnabled": "Show Spinner Tips",
+      "spinnerTipsEnabledHint": "Show tips during the loading spinner",
+      "attributionCommit": "Git Attribution (Co-Authored-By)",
+      "attributionHint": "Leave empty to disable Co-Authored-By in commits"
+    }
   },
   "header": {
     "viewOnGithub": "View on GitHub",
@@ -268,6 +344,8 @@
     "tabGeneral": "General",
     "tabAuth": "Auth",
     "tabClaudeConfig": "Claude Config",
+    "tabConfiguration": "Configuration",
+    "tabTutorial": "Tutorial",
     "tabAdvanced": "Advanced",
     "tabProxy": "Routing",
     "authCenter": {
@@ -1066,7 +1144,31 @@
     "modelNamePlaceholder": "e.g., gpt-5-codex",
     "contextWindow1M": "1M Context Window",
     "autoCompactLimit": "Auto Compact Limit",
-    "autoCompactLimitHint": "Auto-compacts history when context reaches this token limit"
+    "autoCompactLimitHint": "Auto-compacts history when context reaches this token limit",
+    "panel": {
+      "title": "Codex Configuration",
+      "fileNotExists": "File does not exist. It will be created on save.",
+      "saveSuccess": "Codex config saved",
+      "saveFailed": "Save failed",
+      "authSaved": "Auth saved",
+      "authSaveFailed": "Invalid JSON format",
+      "fieldUpdated": "Field updated",
+      "updateFailed": "Update failed",
+      "configToml": {
+        "title": "config.toml",
+        "description": "TOML format configuration file"
+      },
+      "authJson": {
+        "title": "auth.json",
+        "description": "Authentication credentials"
+      },
+      "quickSettings": {
+        "title": "Quick Settings",
+        "description": "Commonly edited fields (syntax-preserving TOML edit)"
+      },
+      "modelName": "Model Name",
+      "baseUrl": "Base URL"
+    }
   },
   "geminiConfig": {
     "envFile": "Environment Variables (.env)",
@@ -1123,7 +1225,23 @@
     "modelExtraFieldKeyPlaceholder": "variants",
     "sdkOptions": "SDK Options",
     "modelOptionKeyPlaceholder": "provider",
-    "modelOptionValuePlaceholder": "{\"order\": [\"baseten\"]}"
+    "modelOptionValuePlaceholder": "{\"order\": [\"baseten\"]}",
+    "panel": {
+      "title": "OpenCode Configuration",
+      "fileNotExists": "File does not exist. It will be created on save.",
+      "saveSuccess": "OpenCode config saved",
+      "saveFailed": "Save failed",
+      "invalidJson": "Invalid JSON format",
+      "mustBeObject": "Configuration must be a JSON object",
+      "configFile": {
+        "title": "opencode.json",
+        "description": "JSON format configuration file"
+      },
+      "providersList": {
+        "title": "Configured Providers",
+        "description": "Providers in this config (read-only)"
+      }
+    }
   },
   "providerPreset": {
     "label": "Provider Preset",
@@ -1768,6 +1886,12 @@
       "loadFailed": "Failed to read memory file",
       "openConfig": "Adjust limits in Hermes Web UI",
       "runtimeNote": "Changes apply on Hermes restart or new session."
+    },
+    "configPanel": {
+      "modelInfo": "Model Configuration",
+      "modelInfoHint": "Model configuration is managed through provider switching and the Hermes Web UI.",
+      "openWebUi": "Open Hermes Web UI",
+      "memoryDescription": "Manage agent and user memory files"
     }
   },
   "env": {
@@ -2605,99 +2729,6 @@
     "queryFailed": "Query failed",
     "refresh": "Refresh"
   },
-  "claudeConfig": {
-    "title": "Claude Code Settings",
-    "description": "Edit ~/.claude/settings.json directly",
-    "fileNotExists": "File does not exist. It will be created on save.",
-    "saveSuccess": "Claude Code settings saved successfully",
-    "saveFailed": "Failed to save Claude Code settings",
-    "managedKeys": {
-      "title": "Some settings are managed by provider switching:",
-      "topLevel": "Top-level: {{keys}}",
-      "envKeys": "Env vars: {{keys}}"
-    },
-    "permissions": {
-      "title": "Permissions",
-      "description": "Control which tools Claude can use and when to ask for approval",
-      "defaultMode": "Default Mode",
-      "modeDefault": "Default (prompt for each tool)",
-      "modeAcceptEdits": "Accept Edits (auto-approve edits)",
-      "modeBypass": "Bypass (skip all permission prompts)",
-      "modePlan": "Plan Mode (read-only)",
-      "allow": "Allow",
-      "allowHint": "Tools to auto-allow. Use patterns like Bash(npm run *), Read(.env*), Edit(/src/**)",
-      "deny": "Deny",
-      "denyHint": "Tools to always deny. Deny rules take priority over Allow.",
-      "ask": "Ask",
-      "askHint": "Tools that require explicit user confirmation each time.",
-      "addAllow": "Add Allowed Tool",
-      "addDeny": "Add Denied Tool",
-      "addAsk": "Add Ask Rule",
-      "additionalDirectories": "Additional Directories",
-      "additionalDirsHint": "Directories Claude can access beyond the project root.",
-      "addDirectory": "Add Directory"
-    },
-    "hooks": {
-      "title": "Hooks",
-      "description": "Shell commands triggered on Claude Code events like PreToolUse, PostToolUse, etc.",
-      "envHint": "Available env vars: $CLAUDE_FILE_PATH, $CLAUDE_PROJECT_DIR, $ARGUMENTS",
-      "noHooks": "No hooks configured",
-      "matcher": "Matcher",
-      "timeout": "timeout (ms)",
-      "addEvent": "+ Add Hook Event...",
-      "addMatcher": "Add Matcher Entry",
-      "addHandler": "Add Handler",
-      "events": {
-        "SessionStart": "Session Start",
-        "UserPromptSubmit": "User Prompt Submit",
-        "PreToolUse": "Before Tool Use",
-        "PermissionRequest": "Permission Request",
-        "PostToolUse": "After Tool Use",
-        "PostToolUseFailure": "After Tool Failure",
-        "Notification": "Notification",
-        "SubagentStart": "Subagent Start",
-        "SubagentStop": "Subagent Stop",
-        "Stop": "On Stop",
-        "PreCompact": "Before Compaction",
-        "SessionEnd": "Session End",
-        "ConfigChange": "Config Change",
-        "WorktreeCreate": "Worktree Create",
-        "WorktreeRemove": "Worktree Remove"
-      }
-    },
-    "sandbox": {
-      "title": "Sandbox",
-      "description": "Security sandbox to isolate Claude Code's file system and network access",
-      "enabled": "Enable Sandbox",
-      "enabledHint": "Run commands in an isolated sandbox environment",
-      "autoAllowBash": "Auto-Allow Bash When Sandboxed",
-      "autoAllowBashHint": "Automatically approve Bash commands when running inside the sandbox",
-      "denyWrite": "Deny Write Paths",
-      "denyWriteHint": "File paths the sandbox cannot write to",
-      "denyRead": "Deny Read Paths",
-      "denyReadHint": "File paths the sandbox cannot read",
-      "addDenyWrite": "Add Path",
-      "addDenyRead": "Add Path"
-    },
-    "env": {
-      "title": "Environment Variables",
-      "description": "Environment variables passed to Claude Code (provider-managed variables are edited via providers)",
-      "add": "Add Variable"
-    },
-    "other": {
-      "title": "Other Settings",
-      "description": "Miscellaneous Claude Code settings",
-      "model": "Model",
-      "modelManaged": "Managed by provider",
-      "cleanupPeriodDays": "Session Cleanup (days)",
-      "showTurnDuration": "Show Turn Duration",
-      "showTurnDurationHint": "Display response time for each turn",
-      "spinnerTipsEnabled": "Show Spinner Tips",
-      "spinnerTipsEnabledHint": "Show tips during the loading spinner",
-      "attributionCommit": "Git Attribution (Co-Authored-By)",
-      "attributionHint": "Leave empty to disable Co-Authored-By in commits"
-    }
-  },
   "claudeLaunch": {
     "title": "Claude Code Launch Configuration",
     "description": "Configure CLI parameters. These will be passed to Claude Code on launch.",
@@ -2733,14 +2764,14 @@
     "launch": "Launch"
   },
   "commands": {
-    "title": "Claude Code Slash Commands",
-    "description": "Reference guide for all Claude Code /commands. Click copy to use in your terminal session.",
+    "title": "AI Coding Agent Slash Command Tutorial",
+    "description": "Reference guide for slash commands across AI coding tools. Click copy to use in your terminal session.",
+    "multiAgentDescription": "Slash command reference for all AI coding agents (Claude Code, Codex, OpenCode, OpenClaw, Hermes). Click to copy for use in terminal sessions.",
     "searchPlaceholder": "Search commands...",
     "copyCommand": "Copy",
     "openTerminal": "Open Terminal",
     "copied": "Copied: {{cmd}}",
     "cliHint": "CLI flag: {{flag}} — can be pre-configured in launch settings",
-    "sessionOnlyHint": "Session-only — only works while Claude Code is running",
     "categories": {
       "session": "Session",
       "config": "Configuration",
@@ -2749,145 +2780,652 @@
       "account": "Account",
       "dev": "Development"
     },
-    "help": {
-      "description": "Show help and list all available slash commands.",
-      "usage": "/help or /help <topic> for detailed help on a specific topic."
+    "claude": {
+      "sessionOnlyHint": "Session-only — only works while Claude Code is running",
+      "help": {
+        "description": "Show help and list all available slash commands.",
+        "usage": "/help or /help <topic> for detailed help on a specific topic."
+      },
+      "clear": {
+        "description": "Clear the conversation history and start fresh.",
+        "usage": "/clear"
+      },
+      "compact": {
+        "description": "Compact the context window to free memory while preserving key information.",
+        "usage": "/compact"
+      },
+      "cost": {
+        "description": "Show token usage and cost for the current session.",
+        "usage": "/cost"
+      },
+      "status": {
+        "description": "Show current session status including model, permissions, and active settings.",
+        "usage": "/status"
+      },
+      "context": {
+        "description": "Show context window usage, token count, and remaining capacity.",
+        "usage": "/context"
+      },
+      "bashes": {
+        "description": "View history of bash commands executed during the session.",
+        "usage": "/bashes"
+      },
+      "todos": {
+        "description": "View the current task list and progress.",
+        "usage": "/todos"
+      },
+      "resume": {
+        "description": "Resume a previous conversation by selecting from recent sessions.",
+        "usage": "/resume"
+      },
+      "rename": {
+        "description": "Rename the current conversation to a custom title.",
+        "usage": "/rename <new-title>"
+      },
+      "export": {
+        "description": "Export the current conversation to a file.",
+        "usage": "/export"
+      },
+      "config": {
+        "description": "Open the configuration panel to view and edit settings.",
+        "usage": "/config"
+      },
+      "init": {
+        "description": "Initialize a CLAUDE.md file in the current project directory.",
+        "usage": "/init"
+      },
+      "model": {
+        "description": "Switch the active model for the current session.",
+        "usage": "/model <model-id>"
+      },
+      "effort": {
+        "description": "Set the reasoning effort level (low/medium/high/max).",
+        "usage": "/effort <level>"
+      },
+      "outputStyle": {
+        "description": "Set the output format (text/json/stream-json) for the session.",
+        "usage": "/output-style <format>"
+      },
+      "permissions": {
+        "description": "Manage tool permission settings for the current session.",
+        "usage": "/permissions"
+      },
+      "approvedTools": {
+        "description": "View and manage the list of approved tools.",
+        "usage": "/approved-tools"
+      },
+      "addDir": {
+        "description": "Add a directory to the workspace for the current session.",
+        "usage": "/add-dir <path>"
+      },
+      "ide": {
+        "description": "Configure IDE integration settings.",
+        "usage": "/ide"
+      },
+      "theme": {
+        "description": "Change the terminal display theme (dark/light/system).",
+        "usage": "/theme <dark|light|system>"
+      },
+      "terminalSetup": {
+        "description": "Setup terminal keybindings for newline/paste behavior.",
+        "usage": "/terminal-setup"
+      },
+      "agents": {
+        "description": "Manage custom AI agents and their configurations.",
+        "usage": "/agents"
+      },
+      "memory": {
+        "description": "Open and edit the memory files (CLAUDE.md, USER.md).",
+        "usage": "/memory"
+      },
+      "review": {
+        "description": "Request a code review of current changes on the branch.",
+        "usage": "/review"
+      },
+      "securityReview": {
+        "description": "Run a security review on current changes.",
+        "usage": "/security-review"
+      },
+      "simplify": {
+        "description": "Simplify and refactor the selected code.",
+        "usage": "/simplify"
+      },
+      "prComments": {
+        "description": "Generate PR review comments for the current changes.",
+        "usage": "/pr-comments"
+      },
+      "doctor": {
+        "description": "Diagnose Claude Code installation and configuration issues.",
+        "usage": "/doctor"
+      },
+      "upgrade": {
+        "description": "Check for and install Claude Code updates.",
+        "usage": "/upgrade"
+      },
+      "releaseNotes": {
+        "description": "View release notes for the current or latest version.",
+        "usage": "/release-notes"
+      },
+      "login": {
+        "description": "Log in to your Anthropic account.",
+        "usage": "/login"
+      },
+      "logout": {
+        "description": "Log out of your Anthropic account.",
+        "usage": "/logout"
+      },
+      "stats": {
+        "description": "View usage statistics for your account.",
+        "usage": "/stats"
+      },
+      "test": {
+        "description": "Run tests defined in the project configuration.",
+        "usage": "/test"
+      }
     },
-    "clear": {
-      "description": "Clear the conversation history and start fresh.",
-      "usage": "/clear"
+    "codex": {
+      "sessionOnlyHint": "Session-only — only works while Codex is running",
+      "help": {
+        "description": "Show help and list all available slash commands.",
+        "usage": "/help or /help <topic> for detailed help on a specific topic."
+      },
+      "clear": {
+        "description": "Clear the conversation history and start fresh.",
+        "usage": "/clear"
+      },
+      "compact": {
+        "description": "Compact the context window to free memory while preserving key information.",
+        "usage": "/compact"
+      },
+      "cost": {
+        "description": "Show token usage and cost for the current session.",
+        "usage": "/cost"
+      },
+      "status": {
+        "description": "Show current session status including model, permissions, and active settings.",
+        "usage": "/status"
+      },
+      "context": {
+        "description": "Show context window usage, token count, and remaining capacity.",
+        "usage": "/context"
+      },
+      "bashes": {
+        "description": "View history of bash commands executed during the session.",
+        "usage": "/bashes"
+      },
+      "todos": {
+        "description": "View the current task list and progress.",
+        "usage": "/todos"
+      },
+      "resume": {
+        "description": "Resume a previous conversation by selecting from recent sessions.",
+        "usage": "/resume"
+      },
+      "rename": {
+        "description": "Rename the current conversation to a custom title.",
+        "usage": "/rename <new-title>"
+      },
+      "export": {
+        "description": "Export the current conversation to a file.",
+        "usage": "/export"
+      },
+      "config": {
+        "description": "Open the configuration panel to view and edit settings.",
+        "usage": "/config"
+      },
+      "init": {
+        "description": "Initialize a CODEX.md file in the current project directory.",
+        "usage": "/init"
+      },
+      "model": {
+        "description": "Switch the active model for the current session.",
+        "usage": "/model <model-id>"
+      },
+      "permissions": {
+        "description": "Manage tool permission settings for the current session.",
+        "usage": "/permissions"
+      },
+      "addDir": {
+        "description": "Add a directory to the workspace for the current session.",
+        "usage": "/add-dir <path>"
+      },
+      "ide": {
+        "description": "Configure IDE integration settings.",
+        "usage": "/ide"
+      },
+      "theme": {
+        "description": "Change the terminal display theme (dark/light/system).",
+        "usage": "/theme <dark|light|system>"
+      },
+      "terminalSetup": {
+        "description": "Setup terminal keybindings for newline/paste behavior.",
+        "usage": "/terminal-setup"
+      },
+      "agents": {
+        "description": "Manage custom AI agents and their configurations.",
+        "usage": "/agents"
+      },
+      "memory": {
+        "description": "Open and edit the memory files (CODEX.md, USER.md).",
+        "usage": "/memory"
+      },
+      "review": {
+        "description": "Request a code review of current changes on the branch.",
+        "usage": "/review"
+      },
+      "securityReview": {
+        "description": "Run a security review on current changes.",
+        "usage": "/security-review"
+      },
+      "simplify": {
+        "description": "Simplify and refactor the selected code.",
+        "usage": "/simplify"
+      },
+      "prComments": {
+        "description": "Generate PR review comments for the current changes.",
+        "usage": "/pr-comments"
+      },
+      "doctor": {
+        "description": "Diagnose Codex installation and configuration issues.",
+        "usage": "/doctor"
+      },
+      "upgrade": {
+        "description": "Check for and install Codex updates.",
+        "usage": "/upgrade"
+      },
+      "releaseNotes": {
+        "description": "View release notes for the current or latest version.",
+        "usage": "/release-notes"
+      },
+      "login": {
+        "description": "Log in to your OpenAI account.",
+        "usage": "/login"
+      },
+      "logout": {
+        "description": "Log out of your OpenAI account.",
+        "usage": "/logout"
+      },
+      "stats": {
+        "description": "View usage statistics for your account.",
+        "usage": "/stats"
+      },
+      "test": {
+        "description": "Run tests defined in the project configuration.",
+        "usage": "/test"
+      }
     },
-    "compact": {
-      "description": "Compact the context window to free memory while preserving key information.",
-      "usage": "/compact"
+    "opencode": {
+      "sessionOnlyHint": "Session-only — only works while OpenCode is running",
+      "help": {
+        "description": "Show help and list all available slash commands.",
+        "usage": "/help or /help <topic> for detailed help on a specific topic."
+      },
+      "clear": {
+        "description": "Clear the conversation history and start fresh.",
+        "usage": "/clear"
+      },
+      "compact": {
+        "description": "Compact the context window to free memory while preserving key information.",
+        "usage": "/compact"
+      },
+      "cost": {
+        "description": "Show token usage and cost for the current session.",
+        "usage": "/cost"
+      },
+      "status": {
+        "description": "Show current session status including model, permissions, and active settings.",
+        "usage": "/status"
+      },
+      "context": {
+        "description": "Show context window usage, token count, and remaining capacity.",
+        "usage": "/context"
+      },
+      "bashes": {
+        "description": "View history of bash commands executed during the session.",
+        "usage": "/bashes"
+      },
+      "todos": {
+        "description": "View the current task list and progress.",
+        "usage": "/todos"
+      },
+      "resume": {
+        "description": "Resume a previous conversation by selecting from recent sessions.",
+        "usage": "/resume"
+      },
+      "rename": {
+        "description": "Rename the current conversation to a custom title.",
+        "usage": "/rename <new-title>"
+      },
+      "export": {
+        "description": "Export the current conversation to a file.",
+        "usage": "/export"
+      },
+      "config": {
+        "description": "Open the configuration panel to view and edit settings.",
+        "usage": "/config"
+      },
+      "init": {
+        "description": "Initialize an AGENTS.md file in the current project directory.",
+        "usage": "/init"
+      },
+      "model": {
+        "description": "Switch the active model for the current session.",
+        "usage": "/model <model-id>"
+      },
+      "permissions": {
+        "description": "Manage tool permission settings for the current session.",
+        "usage": "/permissions"
+      },
+      "addDir": {
+        "description": "Add a directory to the workspace for the current session.",
+        "usage": "/add-dir <path>"
+      },
+      "ide": {
+        "description": "Configure IDE integration settings.",
+        "usage": "/ide"
+      },
+      "theme": {
+        "description": "Change the terminal display theme (dark/light/system).",
+        "usage": "/theme <dark|light|system>"
+      },
+      "agents": {
+        "description": "Manage custom AI agents and their configurations.",
+        "usage": "/agents"
+      },
+      "memory": {
+        "description": "Open and edit the memory files (CLAUDE.md, USER.md).",
+        "usage": "/memory"
+      },
+      "review": {
+        "description": "Request a code review of current changes on the branch.",
+        "usage": "/review"
+      },
+      "simplify": {
+        "description": "Simplify and refactor the selected code.",
+        "usage": "/simplify"
+      },
+      "prComments": {
+        "description": "Generate PR review comments for the current changes.",
+        "usage": "/pr-comments"
+      },
+      "doctor": {
+        "description": "Diagnose OpenCode installation and configuration issues.",
+        "usage": "/doctor"
+      },
+      "upgrade": {
+        "description": "Check for and install OpenCode updates.",
+        "usage": "/upgrade"
+      },
+      "releaseNotes": {
+        "description": "View release notes for the current or latest version.",
+        "usage": "/release-notes"
+      },
+      "login": {
+        "description": "Log in to your OpenCode account.",
+        "usage": "/login"
+      },
+      "logout": {
+        "description": "Log out of your OpenCode account.",
+        "usage": "/logout"
+      },
+      "test": {
+        "description": "Run tests defined in the project configuration.",
+        "usage": "/test"
+      }
     },
-    "cost": {
-      "description": "Show token usage and cost for the current session.",
-      "usage": "/cost"
+    "openclaw": {
+      "sessionOnlyHint": "Session-only — only works while OpenClaw is running",
+      "help": {
+        "description": "Show help and list all available slash commands.",
+        "usage": "/help or /help <topic> for detailed help on a specific topic."
+      },
+      "clear": {
+        "description": "Clear the conversation history and start fresh.",
+        "usage": "/clear"
+      },
+      "compact": {
+        "description": "Compact the context window to free memory while preserving key information.",
+        "usage": "/compact"
+      },
+      "cost": {
+        "description": "Show token usage and cost for the current session.",
+        "usage": "/cost"
+      },
+      "status": {
+        "description": "Show current session status including model, permissions, and active settings.",
+        "usage": "/status"
+      },
+      "context": {
+        "description": "Show context window usage, token count, and remaining capacity.",
+        "usage": "/context"
+      },
+      "bashes": {
+        "description": "View history of bash commands executed during the session.",
+        "usage": "/bashes"
+      },
+      "todos": {
+        "description": "View the current task list and progress.",
+        "usage": "/todos"
+      },
+      "resume": {
+        "description": "Resume a previous conversation by selecting from recent sessions.",
+        "usage": "/resume"
+      },
+      "rename": {
+        "description": "Rename the current conversation to a custom title.",
+        "usage": "/rename <new-title>"
+      },
+      "export": {
+        "description": "Export the current conversation to a file.",
+        "usage": "/export"
+      },
+      "config": {
+        "description": "Open the configuration panel to view and edit settings.",
+        "usage": "/config"
+      },
+      "init": {
+        "description": "Initialize an AGENTS.md file in the current project directory.",
+        "usage": "/init"
+      },
+      "model": {
+        "description": "Switch the active model for the current session.",
+        "usage": "/model <model-id>"
+      },
+      "permissions": {
+        "description": "Manage tool permission settings for the current session.",
+        "usage": "/permissions"
+      },
+      "addDir": {
+        "description": "Add a directory to the workspace for the current session.",
+        "usage": "/add-dir <path>"
+      },
+      "ide": {
+        "description": "Configure IDE integration settings.",
+        "usage": "/ide"
+      },
+      "theme": {
+        "description": "Change the terminal display theme (dark/light/system).",
+        "usage": "/theme <dark|light|system>"
+      },
+      "terminalSetup": {
+        "description": "Setup terminal keybindings for newline/paste behavior.",
+        "usage": "/terminal-setup"
+      },
+      "agents": {
+        "description": "Manage custom AI agents and their configurations.",
+        "usage": "/agents"
+      },
+      "memory": {
+        "description": "Open and edit the memory files (CLAUDE.md, USER.md).",
+        "usage": "/memory"
+      },
+      "review": {
+        "description": "Request a code review of current changes on the branch.",
+        "usage": "/review"
+      },
+      "simplify": {
+        "description": "Simplify and refactor the selected code.",
+        "usage": "/simplify"
+      },
+      "prComments": {
+        "description": "Generate PR review comments for the current changes.",
+        "usage": "/pr-comments"
+      },
+      "doctor": {
+        "description": "Diagnose OpenClaw installation and configuration issues.",
+        "usage": "/doctor"
+      },
+      "upgrade": {
+        "description": "Check for and install OpenClaw updates.",
+        "usage": "/upgrade"
+      },
+      "releaseNotes": {
+        "description": "View release notes for the current or latest version.",
+        "usage": "/release-notes"
+      },
+      "login": {
+        "description": "Log in to your OpenClaw account.",
+        "usage": "/login"
+      },
+      "logout": {
+        "description": "Log out of your OpenClaw account.",
+        "usage": "/logout"
+      },
+      "stats": {
+        "description": "View usage statistics for your account.",
+        "usage": "/stats"
+      },
+      "test": {
+        "description": "Run tests defined in the project configuration.",
+        "usage": "/test"
+      }
     },
-    "status": {
-      "description": "Show current session status including model, permissions, and active settings.",
-      "usage": "/status"
-    },
-    "context": {
-      "description": "Show context window usage, token count, and remaining capacity.",
-      "usage": "/context"
-    },
-    "bashes": {
-      "description": "View history of bash commands executed during the session.",
-      "usage": "/bashes"
-    },
-    "todos": {
-      "description": "View the current task list and progress.",
-      "usage": "/todos"
-    },
-    "resume": {
-      "description": "Resume a previous conversation by selecting from recent sessions.",
-      "usage": "/resume"
-    },
-    "rename": {
-      "description": "Rename the current conversation to a custom title.",
-      "usage": "/rename <new-title>"
-    },
-    "export": {
-      "description": "Export the current conversation to a file.",
-      "usage": "/export"
-    },
-    "config": {
-      "description": "Open the configuration panel to view and edit settings.",
-      "usage": "/config"
-    },
-    "init": {
-      "description": "Initialize a CLAUDE.md file in the current project directory.",
-      "usage": "/init"
-    },
-    "model": {
-      "description": "Switch the active model for the current session.",
-      "usage": "/model <model-id>"
-    },
-    "effort": {
-      "description": "Set the reasoning effort level (low/medium/high/max).",
-      "usage": "/effort <level>"
-    },
-    "outputStyle": {
-      "description": "Set the output format (text/json/stream-json) for the session.",
-      "usage": "/output-style <format>"
-    },
-    "permissions": {
-      "description": "Manage tool permission settings for the current session.",
-      "usage": "/permissions"
-    },
-    "approvedTools": {
-      "description": "View and manage the list of approved tools.",
-      "usage": "/approved-tools"
-    },
-    "addDir": {
-      "description": "Add a directory to the workspace for the current session.",
-      "usage": "/add-dir <path>"
-    },
-    "ide": {
-      "description": "Configure IDE integration settings.",
-      "usage": "/ide"
-    },
-    "theme": {
-      "description": "Change the terminal display theme (dark/light/system).",
-      "usage": "/theme <dark|light|system>"
-    },
-    "terminalSetup": {
-      "description": "Setup terminal keybindings for newline/paste behavior.",
-      "usage": "/terminal-setup"
-    },
-    "agents": {
-      "description": "Manage custom AI agents and their configurations.",
-      "usage": "/agents"
-    },
-    "memory": {
-      "description": "Open and edit the memory files (CLAUDE.md, USER.md).",
-      "usage": "/memory"
-    },
-    "review": {
-      "description": "Request a code review of current changes on the branch.",
-      "usage": "/review"
-    },
-    "securityReview": {
-      "description": "Run a security review on current changes.",
-      "usage": "/security-review"
-    },
-    "simplify": {
-      "description": "Simplify and refactor the selected code.",
-      "usage": "/simplify"
-    },
-    "prComments": {
-      "description": "Generate PR review comments for the current changes.",
-      "usage": "/pr-comments"
-    },
-    "doctor": {
-      "description": "Diagnose Claude Code installation and configuration issues.",
-      "usage": "/doctor"
-    },
-    "upgrade": {
-      "description": "Check for and install Claude Code updates.",
-      "usage": "/upgrade"
-    },
-    "releaseNotes": {
-      "description": "View release notes for the current or latest version.",
-      "usage": "/release-notes"
-    },
-    "login": {
-      "description": "Log in to your Anthropic account.",
-      "usage": "/login"
-    },
-    "logout": {
-      "description": "Log out of your Anthropic account.",
-      "usage": "/logout"
-    },
-    "stats": {
-      "description": "View usage statistics for your account.",
-      "usage": "/stats"
-    },
-    "test": {
-      "description": "Run tests defined in the project configuration.",
-      "usage": "/test"
+    "hermes": {
+      "sessionOnlyHint": "Session-only — only works while Hermes is running",
+      "help": {
+        "description": "Show help and list all available slash commands.",
+        "usage": "/help or /help <topic> for detailed help on a specific topic."
+      },
+      "clear": {
+        "description": "Clear the conversation history and start fresh.",
+        "usage": "/clear"
+      },
+      "compact": {
+        "description": "Compact the context window to free memory while preserving key information.",
+        "usage": "/compact"
+      },
+      "cost": {
+        "description": "Show token usage and cost for the current session.",
+        "usage": "/cost"
+      },
+      "status": {
+        "description": "Show current session status including model, permissions, and active settings.",
+        "usage": "/status"
+      },
+      "context": {
+        "description": "Show context window usage, token count, and remaining capacity.",
+        "usage": "/context"
+      },
+      "bashes": {
+        "description": "View history of bash commands executed during the session.",
+        "usage": "/bashes"
+      },
+      "todos": {
+        "description": "View the current task list and progress.",
+        "usage": "/todos"
+      },
+      "resume": {
+        "description": "Resume a previous conversation by selecting from recent sessions.",
+        "usage": "/resume"
+      },
+      "rename": {
+        "description": "Rename the current conversation to a custom title.",
+        "usage": "/rename <new-title>"
+      },
+      "export": {
+        "description": "Export the current conversation to a file.",
+        "usage": "/export"
+      },
+      "config": {
+        "description": "Open the configuration panel to view and edit settings.",
+        "usage": "/config"
+      },
+      "init": {
+        "description": "Initialize an AGENTS.md file in the current project directory.",
+        "usage": "/init"
+      },
+      "model": {
+        "description": "Switch the active model for the current session.",
+        "usage": "/model <model-id>"
+      },
+      "outputStyle": {
+        "description": "Set the output format (text/json/stream-json) for the session.",
+        "usage": "/output-style <format>"
+      },
+      "permissions": {
+        "description": "Manage tool permission settings for the current session.",
+        "usage": "/permissions"
+      },
+      "addDir": {
+        "description": "Add a directory to the workspace for the current session.",
+        "usage": "/add-dir <path>"
+      },
+      "ide": {
+        "description": "Configure IDE integration settings.",
+        "usage": "/ide"
+      },
+      "theme": {
+        "description": "Change the terminal display theme (dark/light/system).",
+        "usage": "/theme <dark|light|system>"
+      },
+      "terminalSetup": {
+        "description": "Setup terminal keybindings for newline/paste behavior.",
+        "usage": "/terminal-setup"
+      },
+      "agents": {
+        "description": "Manage custom AI agents and their configurations.",
+        "usage": "/agents"
+      },
+      "memory": {
+        "description": "Open and edit the memory files (CLAUDE.md, USER.md).",
+        "usage": "/memory"
+      },
+      "review": {
+        "description": "Request a code review of current changes on the branch.",
+        "usage": "/review"
+      },
+      "simplify": {
+        "description": "Simplify and refactor the selected code.",
+        "usage": "/simplify"
+      },
+      "prComments": {
+        "description": "Generate PR review comments for the current changes.",
+        "usage": "/pr-comments"
+      },
+      "doctor": {
+        "description": "Diagnose Hermes installation and configuration issues.",
+        "usage": "/doctor"
+      },
+      "upgrade": {
+        "description": "Check for and install Hermes updates.",
+        "usage": "/upgrade"
+      },
+      "releaseNotes": {
+        "description": "View release notes for the current or latest version.",
+        "usage": "/release-notes"
+      },
+      "login": {
+        "description": "Log in to your Hermes account.",
+        "usage": "/login"
+      },
+      "logout": {
+        "description": "Log out of your Hermes account.",
+        "usage": "/logout"
+      },
+      "test": {
+        "description": "Run tests defined in the project configuration.",
+        "usage": "/test"
+      }
     }
   }
 }

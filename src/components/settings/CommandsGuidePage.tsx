@@ -1,12 +1,5 @@
 import { useState, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
@@ -79,11 +72,6 @@ const ALL_COMMANDS: Record<Exclude<AgentId, "all">, AgentSlashCommand[]> = {
   hermes: HERMES_SLASH_COMMANDS,
 };
 
-export interface CommandsGuideDialogProps {
-  open: boolean;
-  onClose: () => void;
-}
-
 function CommandCard({
   cmd,
   onCopy,
@@ -146,10 +134,7 @@ function CommandCard({
   );
 }
 
-export function CommandsGuideDialog({
-  open,
-  onClose,
-}: CommandsGuideDialogProps) {
+export function CommandsGuidePage() {
   const { t } = useTranslation();
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<CommandCategory | "all">(
@@ -167,7 +152,6 @@ export function CommandsGuideDialog({
       list = ALL_COMMANDS[activeAgent] ?? [];
     }
 
-    // Search
     const q = search.toLowerCase().trim();
     if (q) {
       list = list.filter(
@@ -178,7 +162,6 @@ export function CommandsGuideDialog({
       );
     }
 
-    // Category filter
     if (activeCategory !== "all") {
       list = list.filter((c) => c.category === activeCategory);
     }
@@ -218,155 +201,153 @@ export function CommandsGuideDialog({
   const filteredCount = filtered.length;
 
   return (
-    <Dialog open={open} onOpenChange={(v) => !v && onClose()}>
-      <DialogContent
-        className="max-w-3xl max-h-[85vh] overflow-hidden flex flex-col"
-        zIndex="top"
-      >
-        <DialogHeader className="px-6 pt-5 pb-0 shrink-0">
-          <DialogTitle className="flex items-center gap-2.5 text-lg">
-            <BookOpen className="h-5 w-5 text-primary" />
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="space-y-1">
+        <div className="flex items-center gap-2.5">
+          <BookOpen className="h-5 w-5 text-primary" />
+          <h3 className="text-base font-semibold">
             {t("commands.title")}
-          </DialogTitle>
-          <DialogDescription className="text-xs">
-            {t("commands.multiAgentDescription", {
-              defaultValue:
-                "Slash command reference for all AI coding agents. Click to copy for use in terminal sessions.",
-            })}
-          </DialogDescription>
-        </DialogHeader>
+          </h3>
+        </div>
+        <p className="text-xs text-muted-foreground">
+          {t("commands.multiAgentDescription", {
+            defaultValue:
+              "Slash command reference for all AI coding agents. Click to copy for use in terminal sessions.",
+          })}
+        </p>
+      </div>
 
-        {/* Agent selector */}
-        <div className="px-6 py-3 space-y-3 shrink-0">
+      {/* Agent selector */}
+      <div className="space-y-3">
+        <div className="flex items-center gap-1.5 flex-wrap">
+          <Button
+            variant={activeAgent === "all" ? "default" : "outline"}
+            size="sm"
+            className="h-7 text-xs"
+            onClick={() => setActiveAgent("all")}
+          >
+            {t("common.all")} ({allCount})
+          </Button>
+          {(
+            Object.entries(AGENT_META) as [
+              Exclude<AgentId, "all">,
+              { label: string; colorClass: string },
+            ][]
+          ).map(([id, meta]) => {
+            const count = ALL_COMMANDS[id].length;
+            return (
+              <Button
+                key={id}
+                variant={activeAgent === id ? "default" : "outline"}
+                size="sm"
+                className="h-7 text-xs"
+                onClick={() => setActiveAgent(id)}
+              >
+                {meta.label} ({count})
+              </Button>
+            );
+          })}
+        </div>
+
+        {/* Search + Category filter */}
+        <div className="space-y-2">
+          <div className="relative">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+            <Input
+              className="h-9 pl-9 text-sm"
+              placeholder={t("commands.searchPlaceholder")}
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
           <div className="flex items-center gap-1.5 flex-wrap">
             <Button
-              variant={activeAgent === "all" ? "default" : "outline"}
+              variant={activeCategory === "all" ? "default" : "outline"}
               size="sm"
               className="h-7 text-xs"
-              onClick={() => setActiveAgent("all")}
+              onClick={() => setActiveCategory("all")}
             >
-              {t("common.all")} ({allCount})
+              {t("common.all")}
             </Button>
-            {(
-              Object.entries(AGENT_META) as [
-                Exclude<AgentId, "all">,
-                { label: string; colorClass: string },
-              ][]
-            ).map(([id, meta]) => {
-              const count = ALL_COMMANDS[id].length;
+            {sortedCategories.map(([cat, meta]) => {
+              const count = (grouped.get(cat) ?? []).length;
               return (
                 <Button
-                  key={id}
-                  variant={activeAgent === id ? "default" : "outline"}
+                  key={cat}
+                  variant={activeCategory === cat ? "default" : "outline"}
                   size="sm"
                   className="h-7 text-xs"
-                  onClick={() => setActiveAgent(id)}
+                  onClick={() => setActiveCategory(cat)}
                 >
-                  {meta.label} ({count})
+                  {t(meta.labelKey)} ({count})
                 </Button>
               );
             })}
           </div>
-
-          {/* Search + Category filter */}
-          <div className="space-y-2">
-            <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-              <Input
-                className="h-9 pl-9 text-sm"
-                placeholder={t("commands.searchPlaceholder")}
-                value={search}
-                onChange={(e) => setSearch(e.target.value)}
-              />
-            </div>
-            <div className="flex items-center gap-1.5 flex-wrap">
-              <Button
-                variant={activeCategory === "all" ? "default" : "outline"}
-                size="sm"
-                className="h-7 text-xs"
-                onClick={() => setActiveCategory("all")}
-              >
-                {t("common.all")}
-              </Button>
-              {sortedCategories.map(([cat, meta]) => {
-                const count = (grouped.get(cat) ?? []).length;
-                return (
-                  <Button
-                    key={cat}
-                    variant={activeCategory === cat ? "default" : "outline"}
-                    size="sm"
-                    className="h-7 text-xs"
-                    onClick={() => setActiveCategory(cat)}
-                  >
-                    {t(meta.labelKey)} ({count})
-                  </Button>
-                );
-              })}
-            </div>
-          </div>
-          {search && (
-            <p className="text-[11px] text-muted-foreground">
-              {filteredCount} / {allCount} {t("common.commands")}
-            </p>
-          )}
         </div>
+        {search && (
+          <p className="text-[11px] text-muted-foreground">
+            {filteredCount} / {allCount} {t("common.commands")}
+          </p>
+        )}
+      </div>
 
-        {/* Command list */}
-        <div className="flex-1 overflow-y-auto px-6 pb-6">
-          {activeCategory === "all" && !search ? (
-            <div className="space-y-6">
-              {sortedCategories.map(([cat, meta]) => {
-                const cmds = grouped.get(cat);
-                if (!cmds?.length) return null;
-                return (
-                  <div key={cat} className="space-y-2">
-                    <div className="flex items-center gap-2">
-                      <Tag className="h-3.5 w-3.5 text-muted-foreground" />
-                      <h3 className="text-sm font-medium">
-                        {t(meta.labelKey)}
-                      </h3>
-                      <Badge
-                        variant="secondary"
-                        className="text-[10px] h-4 px-1.5"
-                      >
-                        {cmds.length}
-                      </Badge>
-                    </div>
-                    <div className="grid gap-2 sm:grid-cols-2">
-                      {cmds.map((cmd) => (
-                        <CommandCard
-                          key={cmd.id + cmd.agent}
-                          cmd={cmd}
-                          onCopy={handleCopy}
-                          copied={copiedId === cmd.id + cmd.agent}
-                          showAgent={activeAgent === "all"}
-                        />
-                      ))}
-                    </div>
+      {/* Command list */}
+      <div>
+        {activeCategory === "all" && !search ? (
+          <div className="space-y-6">
+            {sortedCategories.map(([cat, meta]) => {
+              const cmds = grouped.get(cat);
+              if (!cmds?.length) return null;
+              return (
+                <div key={cat} className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <Tag className="h-3.5 w-3.5 text-muted-foreground" />
+                    <h3 className="text-sm font-medium">
+                      {t(meta.labelKey)}
+                    </h3>
+                    <Badge
+                      variant="secondary"
+                      className="text-[10px] h-4 px-1.5"
+                    >
+                      {cmds.length}
+                    </Badge>
                   </div>
-                );
-              })}
-            </div>
-          ) : (
-            <div className="grid gap-2 sm:grid-cols-2">
-              {filtered.map((cmd) => (
-                <CommandCard
-                  key={cmd.id + cmd.agent}
-                  cmd={cmd}
-                  onCopy={handleCopy}
-                  copied={copiedId === cmd.id + cmd.agent}
-                  showAgent={activeAgent === "all"}
-                />
-              ))}
-              {filtered.length === 0 && (
-                <p className="text-sm text-muted-foreground col-span-2 text-center py-8">
-                  {t("common.noResults")}
-                </p>
-              )}
-            </div>
-          )}
-        </div>
-      </DialogContent>
-    </Dialog>
+                  <div className="grid gap-2 sm:grid-cols-2">
+                    {cmds.map((cmd) => (
+                      <CommandCard
+                        key={cmd.id + cmd.agent}
+                        cmd={cmd}
+                        onCopy={handleCopy}
+                        copied={copiedId === cmd.id + cmd.agent}
+                        showAgent={activeAgent === "all"}
+                      />
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="grid gap-2 sm:grid-cols-2">
+            {filtered.map((cmd) => (
+              <CommandCard
+                key={cmd.id + cmd.agent}
+                cmd={cmd}
+                onCopy={handleCopy}
+                copied={copiedId === cmd.id + cmd.agent}
+                showAgent={activeAgent === "all"}
+              />
+            ))}
+            {filtered.length === 0 && (
+              <p className="text-sm text-muted-foreground col-span-2 text-center py-8">
+                {t("common.noResults")}
+              </p>
+            )}
+          </div>
+        )}
+      </div>
+    </div>
   );
 }
