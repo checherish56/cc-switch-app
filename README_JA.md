@@ -2,12 +2,12 @@
 
 # CC Switch
 
-### Claude Code、Codex、Gemini CLI、OpenCode、OpenClaw のオールインワン管理ツール
+### Claude Code、Codex、Gemini CLI、OpenCode、OpenClaw & Hermes Agent のオールインワン管理ツール
 
-[![Version](https://img.shields.io/github/v/release/farion1231/cc-switch?color=blue&label=version)](https://github.com/farion1231/cc-switch/releases)
-[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](https://github.com/farion1231/cc-switch/releases)
+[![Version](https://img.shields.io/github/v/release/checherish56/cc-switch-app?color=blue&label=version)](https://github.com/checherish56/cc-switch-app/releases)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](https://github.com/checherish56/cc-switch-app/releases)
 [![Built with Tauri](https://img.shields.io/badge/built%20with-Tauri%202-orange.svg)](https://tauri.app/)
-[![Downloads](https://img.shields.io/github/downloads/farion1231/cc-switch/total)](https://github.com/farion1231/cc-switch/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/checherish56/cc-switch-app/total)](https://github.com/checherish56/cc-switch-app/releases/latest)
 
 <a href="https://trendshift.io/repositories/15372" target="_blank"><img src="https://trendshift.io/api/badge/repositories/15372" alt="farion1231%2Fcc-switch | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 
@@ -138,15 +138,31 @@ CC Switch ユーザー限定特典： 専用リンクからご<a href="https://d
 
 最新の AI コーディングは Claude Code、Codex、Gemini CLI、OpenCode、OpenClaw などの CLI ツールに依存していますが、各ツールの設定形式はバラバラです。API プロバイダを切り替えるたびに JSON、TOML、`.env` ファイルを手動で編集する必要があり、複数ツール間で MCP や Skills を統一的に管理する手段もありません。
 
-**CC Switch** は、5 つの CLI ツールを 1 つのデスクトップアプリで一元管理できます。設定ファイルを手作業で編集する代わりに、ワンクリックでプロバイダをインポートし、瞬時に切り替えられるビジュアルインターフェースを提供します。50 以上の組み込みプリセット、統一 MCP・Skills 管理、システムトレイからの即時切り替え機能を搭載。すべてはアトミック書き込みによる信頼性の高い SQLite データベースに支えられており、設定の破損を防ぎます。
+**CC Switch** は、6 つの CLI ツールを 1 つのデスクトップアプリで一元管理できます。設定ファイルを手作業で編集する代わりに、ワンクリックでプロバイダをインポートし、瞬時に切り替えられるビジュアルインターフェースを提供します。50 以上の組み込みプリセット、統一 MCP・Skills 管理、システムトレイからの即時切り替え機能を搭載。すべてはアトミック書き込みによる信頼性の高い SQLite データベースに支えられており、設定の破損を防ぎます。
 
-- **1 つのアプリで 5 つの CLI ツール** -- Claude Code、Codex、Gemini CLI、OpenCode、OpenClaw を単一インターフェースで管理
+- **1 つのアプリで 6 つの CLI ツール** -- Claude Code、Codex、Gemini CLI、OpenCode、OpenClaw、Hermes Agent を単一インターフェースで管理
 - **手動編集は不要** -- AWS Bedrock、NVIDIA NIM、コミュニティリレーなど 50 以上のプロバイダプリセットを内蔵。選んで切り替えるだけ
 - **統一 MCP・Skills 管理** -- 1 つのパネルで 4 つのアプリの MCP サーバーと Skills を双方向同期で管理
 - **システムトレイでクイック切り替え** -- トレイメニューから即座にプロバイダを切り替え。アプリを開く必要なし
 - **クラウド同期** -- Dropbox、OneDrive、iCloud、または WebDAV サーバー経由でデバイス間のプロバイダデータを同期
 - **クロスプラットフォーム** -- Tauri 2 で構築された Windows、macOS、Linux 対応のネイティブデスクトップアプリ
 - **便利ツール内蔵** -- 初回起動時のログイン確認、署名バイパス、プラグイン拡張の同期など、さまざまなユーティリティを搭載
+
+## v3.16.1 の新機能
+
+### マルチエージェントスラッシュコマンドチュートリアル
+
+**5 つの全対応エージェントのスラッシュコマンド** — Claude Code（36 コマンド）、Codex（33）、OpenCode（30）、OpenClaw（32）、Hermes（32）を閲覧できます。各エージェントには独自の分類・検索可能なリファレンスパネルがあり、エージェント固有の説明、CLI 相当フラグ、セッション限定インジケーターを表示。ワンクリックでコピーしてすぐに使用できます。
+
+> **場所**：設定 → バージョン情報 → "AI コーディングエージェントスラッシュコマンドチュートリアル" ボタン
+
+### Codex、OpenCode、OpenClaw & Hermes 設定パネル
+
+対応するすべてのエージェントに専用の設定パネルを提供。各エージェントが独自の設定タブを持ち、プロバイダ構成、起動オプション、ツール固有の設定を管理できます。
+
+### i18n の改善 — エージェント固有の翻訳
+
+すべてのスラッシュコマンドの説明、メモリファイルの参照、アカウントログイン、ツール診断が **エージェントごとの翻訳キー** を使用するようになりました。Codex に "Claude Code" や "Anthropic" の表記が表示されることはなくなり、OpenCode および他のツールは英語・中国語・日本語でそれぞれのツール固有のテキストが表示されます。
 
 ## スクリーンショット
 
@@ -160,7 +176,7 @@ CC Switch ユーザー限定特典： 専用リンクからご<a href="https://d
 
 ### プロバイダ管理
 
-- **5 つの CLI ツール、50 以上のプリセット** -- Claude Code、Codex、Gemini CLI、OpenCode、OpenClaw。キーをコピーしてワンクリックでインポート
+- **6 つの CLI ツール、50 以上のプリセット** -- Claude Code、Codex、Gemini CLI、OpenCode、OpenClaw。キーをコピーしてワンクリックでインポート
 - **ユニバーサルプロバイダ** -- 1 つの設定を複数アプリに同期（OpenCode、OpenClaw）
 - ワンクリック切り替え、システムトレイクイックアクセス、ドラッグ＆ドロップ並び替え、インポート/エクスポート
 
@@ -511,7 +527,7 @@ PR を送る前に以下をご確認ください：
 
 ## Star History
 
-[![Star History Chart](https://api.star-history.com/svg?repos=farion1231/cc-switch&type=Date)](https://www.star-history.com/#farion1231/cc-switch&Date)
+[![Star History Chart](https://api.star-history.com/svg?repos=checherish56/cc-switch-app&type=Date)](https://www.star-history.com/#checherish56/cc-switch-app&Date)
 
 ## ライセンス
 

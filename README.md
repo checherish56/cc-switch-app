@@ -4,10 +4,10 @@
 
 ### The All-in-One Manager for Claude Code, Codex, Gemini CLI, OpenCode, OpenClaw & Hermes Agent
 
-[![Version](https://img.shields.io/github/v/release/farion1231/cc-switch?color=blue&label=version)](https://github.com/farion1231/cc-switch/releases)
-[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](https://github.com/farion1231/cc-switch/releases)
+[![Version](https://img.shields.io/github/v/release/checherish56/cc-switch-app?color=blue&label=version)](https://github.com/checherish56/cc-switch-app/releases)
+[![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey.svg)](https://github.com/checherish56/cc-switch-app/releases)
 [![Built with Tauri](https://img.shields.io/badge/built%20with-Tauri%202-orange.svg)](https://tauri.app/)
-[![Downloads](https://img.shields.io/github/downloads/farion1231/cc-switch/total)](https://github.com/farion1231/cc-switch/releases/latest)
+[![Downloads](https://img.shields.io/github/downloads/checherish56/cc-switch-app/total)](https://github.com/checherish56/cc-switch-app/releases/latest)
 
 <a href="https://trendshift.io/repositories/15372" target="_blank"><img src="https://trendshift.io/api/badge/repositories/15372" alt="farion1231%2Fcc-switch | Trendshift" style="width: 250px; height: 55px;" width="250" height="55"/></a>
 
@@ -17,43 +17,28 @@ English | [中文](README_ZH.md) | [日本語](README_JA.md) | [Changelog](CHANG
 
 ---
 
-## v3.15.1 — What's New
+## v3.16.1 — What's New
 
-### Claude Code Slash Commands Guide
+### Multi-Agent Slash Command Tutorials
 
-Browse all **34 Claude Code `/` commands** in a searchable, categorized reference dialog. Each command shows its description, usage syntax, and whether it's session-only or has a CLI equivalent flag. One-click copy for quick terminal input.
+Browse **slash commands for all 5 supported agents** — Claude Code (36 commands), Codex (33), OpenCode (30), OpenClaw (32), and Hermes (32). Each agent has its own categorized, searchable reference dialog with agent-specific descriptions, CLI equivalents, and session-only indicators. One-click copy for quick terminal input.
 
-> **Location**: Settings → About → "Claude Code Slash Commands" button
+> **Location**: Settings → About → "AI Coding Agent Slash Command Tutorial" button
 
-### Skills Ecosystem — One-Click Install
+### Codex, OpenCode, OpenClaw & Hermes Config Panels
 
-| Skill | Description |
-|-------|-------------|
-| **Skills CLI** | Universal agent skill package manager (`npx skills`). Install once, then use `skills add <repo>` to discover and install skills across 50+ coding agents (Claude Code, Codex, Cursor, etc.) |
-| **Anthropic Skills** | 17 production-ready reference skills from Anthropic — document tools (docx, pdf, pptx, xlsx), creative design, MCP builder, webapp testing, and more. Auto-cloned into `~/.claude/skills/` for Claude Code discovery |
+Dedicated configuration panels for all supported agents. Each agent now has its own settings tab for managing provider configurations, launch options, and tool-specific preferences.
 
-> **Location**: Settings → About — both available as one-click install cards with progress tracking
+### Improved i18n — Agent-Specific Translations
 
-### Tool Uninstall & Update
-
-Every tool and skill in the About page now has **Uninstall** and **Update** buttons alongside Install. When a newer version is detected, an update button appears with the target version. Uninstall includes a confirmation prompt.
-
-Supports all 8 tools/skills:
-- Claude Code, Codex, Gemini CLI, OpenCode, OpenClaw, Hermes Agent
-- Skills CLI, Anthropic Skills
-
-### Fixes
-
-- **CommandsGuide dialog**: Added X close button; fixed z-index so the guide renders above the Settings dialog
-- **Anthropic Skills install**: Fixed git clone path quoting on Windows
-- **OpenClaw & Hermes Agent**: Fixed version detection (now included in `VALID_TOOLS`)
+All slash command descriptions, memory file references, account logins, and tool diagnostics now use **per-agent translation keys**. Codex no longer shows "Claude Code" or "Anthropic" references, OpenCode and others show their own tool-specific text across English, Chinese, and Japanese.
 
 ---
 
 ## Quick Links
 
 - **[Full Feature List](docs/user-manual/en/README.md)** — Provider management, MCP, Prompts, Skills, Sessions, Proxy, Cloud Sync
-- **[Download](https://github.com/farion1231/cc-switch/releases/latest)** — Windows MSI, macOS DMG, Linux deb/rpm/AppImage
+- **[Download](https://github.com/checherish56/cc-switch-app/releases/latest)** — Windows MSI, macOS DMG, Linux deb/rpm/AppImage
 - **[Changelog](CHANGELOG.md)** — Complete release history
 - **[Screenshots](docs/user-manual/en/README.md#screenshots)**
 
